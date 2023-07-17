@@ -52,3 +52,13 @@ pub struct PopulatedSlot {
     pub slot: Slot,
     pub event_instances: Vec<EventInstance>,
 }
+
+pub struct Schedule {
+    pub populated_slots: Vec<PopulatedSlot>,
+}
+
+impl Schedule {
+    pub fn new(populated_slots: Vec<PopulatedSlot>) -> Schedule {
+        Schedule { populated_slots }
+    }
+}
