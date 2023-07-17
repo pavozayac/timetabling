@@ -41,6 +41,13 @@ impl Event {
             tags,
         }
     }
+
+    pub fn assign(self, assigned_resources: Vec<Resource>) -> EventInstance {
+        EventInstance {
+            event: self,
+            assigned_resources: assigned_resources,
+        }
+    }
 }
 
 pub struct EventBuilder {
@@ -102,4 +109,9 @@ impl EventBuilder {
             tags: self.tags,
         }
     }
+}
+
+pub struct EventInstance {
+    pub event: Event,
+    pub assigned_resources: Vec<Resource>,
 }
