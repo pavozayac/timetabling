@@ -1,5 +1,7 @@
 use chrono::{DateTime, Utc};
 
+use super::events::EventInstance;
+
 pub struct Slot {
     pub start: DateTime<Utc>,
     pub end: DateTime<Utc>,
@@ -12,6 +14,13 @@ impl Slot {
 
     pub fn length(&self) -> chrono::Duration {
         self.end.signed_duration_since(self.start)
+    }
+
+    pub fn populate(self, event_instances: Vec<EventInstance>) -> PopulatedSlot {
+        PopulatedSlot {
+            slot: self,
+            event_instances: event_instances,
+        }
     }
 }
 
@@ -37,4 +46,9 @@ impl From<Vec<Slot>> for Outline {
     fn from(value: Vec<Slot>) -> Self {
         Outline { slots: value }
     }
+}
+
+pub struct PopulatedSlot {
+    pub slot: Slot,
+    pub event_instances: Vec<EventInstance>,
 }
