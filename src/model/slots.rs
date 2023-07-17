@@ -6,11 +6,11 @@ pub struct Slot {
 }
 
 impl Slot {
-    fn new(start: DateTime<Utc>, end: DateTime<Utc>) -> Slot {
+    pub fn new(start: DateTime<Utc>, end: DateTime<Utc>) -> Slot {
         Slot { start, end }
     }
 
-    fn length(&self) -> chrono::Duration {
+    pub fn length(&self) -> chrono::Duration {
         self.end.signed_duration_since(self.start)
     }
 }
@@ -20,15 +20,15 @@ pub struct Outline {
 }
 
 impl Outline {
-    fn new() -> Outline {
+    pub fn new() -> Outline {
         Outline { slots: vec![] }
     }
 
-    fn add_slot(&mut self, slot: Slot) {
+    pub fn add_slot(&mut self, slot: Slot) {
         self.slots.push(slot);
     }
 
-    fn slots(&self) -> &Vec<Slot> {
+    pub fn slots(&self) -> &Vec<Slot> {
         &self.slots
     }
 }

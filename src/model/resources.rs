@@ -8,7 +8,7 @@ pub struct Resource {
 }
 
 impl Resource {
-    fn new(name: String, availability: Outline) -> Resource {
+    pub fn new(name: String, availability: Outline) -> Resource {
         Resource { name, availability }
     }
 }
