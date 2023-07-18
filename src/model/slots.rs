@@ -46,11 +46,7 @@ impl Outline {
         Outline { slots: vec![] }
     }
 
-    pub fn add_slot(&mut self, slot: Slot) {
-        self.slots.push(slot);
-    }
-
-    pub fn slots(&self) -> &Vec<Slot> {
+    pub fn slots_slice(&self) -> &[Slot] {
         &self.slots
     }
 }
