@@ -7,9 +7,9 @@ use super::{
     slots::{Outline, Slot},
 };
 
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub struct Event {
-    pub name: String,
+    pub id: u64,
     pub length: Duration,
     // This is Some(slot) if the event is always supposed to be in one particular slot.
     pub fixed_slot: Option<Slot>,
@@ -21,21 +21,21 @@ pub struct Event {
     // This makes it rather easy to specify the repeats (e.g. daily, weekly,...).
     // If None, then event occurs only once.
     pub repeat_duration: Option<Duration>,
-    pub tags: Vec<String>,
+    pub tags: Vec<u64>,
 }
 
 impl Event {
     pub fn new(
-        name: String,
+        id: u64,
         length: Duration,
         fixed_slot: Option<Slot>,
         resource_constraints: Option<Vec<Resource>>,
         time_constraints: Option<Outline>,
         repeat_duration: Option<Duration>,
-        tags: Vec<String>,
+        tags: Vec<u64>,
     ) -> Event {
         Event {
-            name,
+            id,
             length,
             fixed_slot,
             resource_constraints,
@@ -47,8 +47,8 @@ impl Event {
 
     pub fn assign(self, assigned_resources: Vec<Resource>) -> Result<EventInstance, ()> {
         if (assigned_resources
-            .iter()
-            .any(|e| !self.resource_constraints.unwrap_or(vec![]).contains(e)))
+            .into_iter()
+            .any(|e| !self.resource_constraints.unwrap_or(vec![]).contains(&e)))
         {
             return Err(());
         }
@@ -61,19 +61,19 @@ impl Event {
 }
 
 pub struct EventBuilder {
-    name: String,
+    id: u64,
     length: Duration,
     fixed_slot: Option<Slot>,
     resource_constraints: Option<Vec<Resource>>,
     time_constraints: Option<Outline>,
     repeat_duration: Option<Duration>,
-    tags: Vec<String>,
+    tags: Vec<u64>,
 }
 
 impl EventBuilder {
-    pub fn new<T: Into<String>>(name: T, length: Duration) -> EventBuilder {
+    pub fn new(id: u64, length: Duration) -> EventBuilder {
         EventBuilder {
-            name: name.into(),
+            id: id,
             length: length,
             fixed_slot: None,
             resource_constraints: None,
@@ -103,14 +103,14 @@ impl EventBuilder {
         self
     }
 
-    pub fn tags(mut self, tags: Vec<String>) -> EventBuilder {
+    pub fn tags(mut self, tags: Vec<u64>) -> EventBuilder {
         self.tags = tags;
         self
     }
 
     pub fn build(self) -> Event {
         Event {
-            name: self.name,
+            id: self.id,
             length: self.length,
             fixed_slot: self.fixed_slot,
             resource_constraints: self.resource_constraints,
@@ -121,7 +121,7 @@ impl EventBuilder {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub struct EventInstance {
     pub event: Event,
     pub assigned_resources: Vec<Resource>,

@@ -18,11 +18,12 @@ impl Slot {
     }
 
     pub fn populate(self, event_instances: Vec<EventInstance>) -> PopulatedSlot {
-        let all_assigned = event_instances
-            .iter()
-            .fold(vec![], |acc, x| acc.extend(x.assigned_resources));
+        let all_assigned = event_instances.iter().fold(vec![], |mut acc, x| {
+            acc.extend_from_slice(&x.assigned_resources);
+            acc
+        });
 
-        if all_assigned.
+        // if all_assigned.
 
         PopulatedSlot {
             slot: self,
@@ -31,7 +32,7 @@ impl Slot {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub struct Outline {
     pub slots: Vec<Slot>,
 }
@@ -56,7 +57,7 @@ impl From<Vec<Slot>> for Outline {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub struct PopulatedSlot {
     pub slot: Slot,
     pub event_instances: Vec<EventInstance>,

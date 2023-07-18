@@ -2,24 +2,24 @@ use chrono::{DateTime, Utc};
 
 use super::slots::Outline;
 
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub struct Resource {
-    pub name: String,
+    pub id: u64,
     pub availability: Outline,
 }
 
 impl Resource {
-    pub fn new(name: String, availability: Outline) -> Resource {
-        Resource { name, availability }
+    pub fn new(id: u64, availability: Outline) -> Resource {
+        Resource { id, availability }
     }
 }
 
 impl PartialEq for Resource {
     fn eq(&self, other: &Self) -> bool {
-        return self.name == other.name;
+        return self.id == other.id;
     }
 
     fn ne(&self, other: &Self) -> bool {
-        return self.name != other.name;
+        return self.id != other.id;
     }
 }
