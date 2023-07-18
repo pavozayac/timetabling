@@ -6,17 +6,12 @@ use super::events::EventInstance;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct Slot {
-    pub start: DateTime<Utc>,
-    pub end: DateTime<Utc>,
+    id: i64,
 }
 
 impl Slot {
-    pub fn new(start: DateTime<Utc>, end: DateTime<Utc>) -> Slot {
-        Slot { start, end }
-    }
-
-    pub fn length(&self) -> Duration {
-        self.end.signed_duration_since(self.start)
+    pub fn new(id: i64) -> Slot {
+        Slot { id }
     }
 
     pub fn populate(self, event_instances: Vec<EventInstance>) -> Result<PopulatedSlot, ()> {
