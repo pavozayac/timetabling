@@ -1,7 +1,8 @@
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, Duration, Utc};
 
 use super::events::EventInstance;
 
+#[derive(Clone, Copy)]
 pub struct Slot {
     pub start: DateTime<Utc>,
     pub end: DateTime<Utc>,
@@ -12,11 +13,17 @@ impl Slot {
         Slot { start, end }
     }
 
-    pub fn length(&self) -> chrono::Duration {
+    pub fn length(&self) -> Duration {
         self.end.signed_duration_since(self.start)
     }
 
     pub fn populate(self, event_instances: Vec<EventInstance>) -> PopulatedSlot {
+        let all_assigned = event_instances
+            .iter()
+            .fold(vec![], |acc, x| acc.extend(x.assigned_resources));
+
+        if all_assigned.
+
         PopulatedSlot {
             slot: self,
             event_instances: event_instances,
@@ -24,6 +31,7 @@ impl Slot {
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct Outline {
     pub slots: Vec<Slot>,
 }
@@ -48,6 +56,7 @@ impl From<Vec<Slot>> for Outline {
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct PopulatedSlot {
     pub slot: Slot,
     pub event_instances: Vec<EventInstance>,

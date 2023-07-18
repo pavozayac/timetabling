@@ -1,3 +1,5 @@
+use std::io::Error;
+
 use chrono::Duration;
 
 use super::{
@@ -5,6 +7,7 @@ use super::{
     slots::{Outline, Slot},
 };
 
+#[derive(Clone, Copy)]
 pub struct Event {
     pub name: String,
     pub length: Duration,
@@ -42,11 +45,18 @@ impl Event {
         }
     }
 
-    pub fn assign(self, assigned_resources: Vec<Resource>) -> EventInstance {
-        EventInstance {
+    pub fn assign(self, assigned_resources: Vec<Resource>) -> Result<EventInstance, ()> {
+        if (assigned_resources
+            .iter()
+            .any(|e| !self.resource_constraints.unwrap_or(vec![]).contains(e)))
+        {
+            return Err(());
+        }
+
+        Ok(EventInstance {
             event: self,
             assigned_resources: assigned_resources,
-        }
+        })
     }
 }
 
@@ -111,6 +121,7 @@ impl EventBuilder {
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct EventInstance {
     pub event: Event,
     pub assigned_resources: Vec<Resource>,
