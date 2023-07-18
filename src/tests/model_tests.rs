@@ -8,7 +8,7 @@ use crate::model::{
 
 #[test]
 pub fn event_errors_with_wrong_constraints() {
-    let event = EventBuilder::new(1, Duration::minutes(30))
+    let event = EventBuilder::new(1)
         .resource_constraints(vec![Resource::new(1, Outline::from(vec![Slot::new(1)]))])
         .build();
 
@@ -19,7 +19,7 @@ pub fn event_errors_with_wrong_constraints() {
 
 #[test]
 pub fn event_assigns_with_constraints() {
-    let event = EventBuilder::new(1, Duration::minutes(30))
+    let event = EventBuilder::new(1)
         .resource_constraints(vec![Resource::new(1, Outline::from(vec![Slot::new(1)]))])
         .build();
 

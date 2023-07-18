@@ -1,5 +1,3 @@
-use chrono::Duration;
-
 use crate::utils;
 
 use super::{
@@ -10,7 +8,6 @@ use super::{
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub struct Event {
     pub id: u64,
-    pub length: Duration,
     // This is Some(slot) if the event is always supposed to be in one particular slot.
     pub fixed_slot: Option<Slot>,
     // This is Some if there are any constraints on resources, None if they can be
@@ -20,27 +17,22 @@ pub struct Event {
     pub time_constraints: Option<Outline>,
     // This makes it rather easy to specify the repeats (e.g. daily, weekly,...).
     // If None, then event occurs only once.
-    pub repeat_duration: Option<Duration>,
     pub tags: Vec<u64>,
 }
 
 impl Event {
     pub fn new(
         id: u64,
-        length: Duration,
         fixed_slot: Option<Slot>,
         resource_constraints: Option<Vec<Resource>>,
         time_constraints: Option<Outline>,
-        repeat_duration: Option<Duration>,
         tags: Vec<u64>,
     ) -> Event {
         Event {
             id,
-            length,
             fixed_slot,
             resource_constraints,
             time_constraints,
-            repeat_duration,
             tags,
         }
     }
@@ -62,23 +54,19 @@ impl Event {
 
 pub struct EventBuilder {
     id: u64,
-    length: Duration,
     fixed_slot: Option<Slot>,
     resource_constraints: Option<Vec<Resource>>,
     time_constraints: Option<Outline>,
-    repeat_duration: Option<Duration>,
     tags: Vec<u64>,
 }
 
 impl EventBuilder {
-    pub fn new(id: u64, length: Duration) -> EventBuilder {
+    pub fn new(id: u64) -> EventBuilder {
         EventBuilder {
             id: id,
-            length: length,
             fixed_slot: None,
             resource_constraints: None,
             time_constraints: None,
-            repeat_duration: None,
             tags: vec![],
         }
     }
@@ -98,11 +86,6 @@ impl EventBuilder {
         self
     }
 
-    pub fn repeat_duration(mut self, duration: Duration) -> EventBuilder {
-        self.repeat_duration = Some(duration);
-        self
-    }
-
     pub fn tags(mut self, tags: Vec<u64>) -> EventBuilder {
         self.tags = tags;
         self
@@ -111,11 +94,9 @@ impl EventBuilder {
     pub fn build(self) -> Event {
         Event {
             id: self.id,
-            length: self.length,
             fixed_slot: self.fixed_slot,
             resource_constraints: self.resource_constraints,
             time_constraints: self.time_constraints,
-            repeat_duration: self.repeat_duration,
             tags: self.tags,
         }
     }
