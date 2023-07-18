@@ -1,6 +1,6 @@
-use std::io::Error;
-
 use chrono::Duration;
+
+use crate::utils;
 
 use super::{
     resources::Resource,
@@ -46,10 +46,10 @@ impl Event {
     }
 
     pub fn assign(self, assigned_resources: Vec<Resource>) -> Result<EventInstance, ()> {
-        if (assigned_resources
-            .into_iter()
-            .any(|e| !self.resource_constraints.unwrap_or(vec![]).contains(&e)))
-        {
+        if utils::is_subset(
+            self.resource_constraints.as_ref().unwrap_or(&vec![]),
+            &assigned_resources,
+        ) {
             return Err(());
         }
 

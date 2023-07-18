@@ -1,5 +1,7 @@
 use chrono::{DateTime, Duration, Utc};
 
+use crate::utils::{self, has_unique_items};
+
 use super::events::EventInstance;
 
 #[derive(Clone, Copy)]
@@ -17,18 +19,20 @@ impl Slot {
         self.end.signed_duration_since(self.start)
     }
 
-    pub fn populate(self, event_instances: Vec<EventInstance>) -> PopulatedSlot {
-        let all_assigned = event_instances.iter().fold(vec![], |mut acc, x| {
-            acc.extend_from_slice(&x.assigned_resources);
+    pub fn populate(self, event_instances: Vec<EventInstance>) -> Result<PopulatedSlot, ()> {
+        let folded = event_instances.iter().fold(vec![], |mut acc, x| {
+            acc.extend_from_slice(x.assigned_resources.as_slice());
             acc
         });
 
-        // if all_assigned.
+        if !has_unique_items(folded) {
+            return Err(());
+        }
 
-        PopulatedSlot {
+        Ok(PopulatedSlot {
             slot: self,
             event_instances: event_instances,
-        }
+        })
     }
 }
 

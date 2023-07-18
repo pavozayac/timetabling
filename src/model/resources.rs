@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc};
+use std::hash::Hash;
 
 use super::slots::Outline;
 
@@ -21,5 +21,13 @@ impl PartialEq for Resource {
 
     fn ne(&self, other: &Self) -> bool {
         return self.id != other.id;
+    }
+}
+
+impl Eq for Resource {}
+
+impl Hash for Resource {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.id.hash(state);
     }
 }
