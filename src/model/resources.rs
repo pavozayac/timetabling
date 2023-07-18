@@ -2,7 +2,7 @@ use std::hash::Hash;
 
 use super::slots::Outline;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Resource {
     pub id: u64,
     pub availability: Outline,

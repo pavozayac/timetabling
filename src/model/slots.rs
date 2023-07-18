@@ -4,7 +4,7 @@ use crate::utils::{self, has_unique_items};
 
 use super::events::EventInstance;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct Slot {
     pub start: DateTime<Utc>,
     pub end: DateTime<Utc>,
@@ -36,7 +36,7 @@ impl Slot {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Eq, Debug)]
 pub struct Outline {
     pub slots: Vec<Slot>,
 }

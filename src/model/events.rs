@@ -7,7 +7,7 @@ use super::{
     slots::{Outline, Slot},
 };
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Eq, Debug)]
 pub struct Event {
     pub id: u64,
     pub length: Duration,
@@ -121,7 +121,7 @@ impl EventBuilder {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Eq, Debug)]
 pub struct EventInstance {
     pub event: Event,
     pub assigned_resources: Vec<Resource>,
