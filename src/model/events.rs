@@ -40,7 +40,9 @@ impl Event {
         assigned_resources: Vec<Resource>,
     ) -> Result<EventInstance, ()> {
         if utils::is_subset(
-            self.resource_constraints.as_ref().unwrap_or(&vec![]),
+            self.resource_constraints
+                .as_ref()
+                .unwrap_or(&assigned_resources),
             &assigned_resources,
         ) {
             Ok(EventInstance {
