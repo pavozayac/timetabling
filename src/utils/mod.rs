@@ -18,16 +18,17 @@ where
     true
 }
 
-pub fn is_subset<T>(superset: T, iterator: T) -> bool
+pub fn is_subset<T, U, V>(superset: T, iterator: U) -> bool
 where
-    T: IntoIterator,
-    T::Item: Eq + Hash,
+    T: IntoIterator<Item = V>,
+    U: IntoIterator<Item = V>,
+    V: Eq + Hash,
 {
-    let mut hashtable = HashSet::new();
+    let mut set: HashSet<V> = HashSet::new();
 
     for s in superset {
-        hashtable.insert(s);
+        set.insert(s);
     }
 
-    iterator.into_iter().all(move |e| hashtable.insert(e))
+    iterator.into_iter().all(|e| !set.insert(e))
 }
