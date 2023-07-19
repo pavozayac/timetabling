@@ -1,5 +1,3 @@
-use chrono::{DateTime, Duration, TimeZone, Utc};
-
 use crate::model::{
     events::{Event, EventBuilder, EventInstance},
     resources::Resource,

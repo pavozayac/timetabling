@@ -1,6 +1,4 @@
-use chrono::{DateTime, Duration, Utc};
-
-use crate::utils::{self, has_unique_items};
+use crate::utils::has_unique_items;
 
 use super::events::EventInstance;
 
