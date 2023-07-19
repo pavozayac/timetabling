@@ -48,14 +48,14 @@ impl Event {
             self.resource_constraints.as_ref().unwrap_or(&vec![]),
             &assigned_resources,
         ) {
+            Ok(EventInstance {
+                event: self,
+                assigned_slot: assigned_slot,
+                assigned_resources: assigned_resources,
+            })
+        } else {
             return Err(());
         }
-
-        Ok(EventInstance {
-            event: self,
-            assigned_slot: assigned_slot,
-            assigned_resources: assigned_resources,
-        })
     }
 }
 
