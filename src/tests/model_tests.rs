@@ -10,7 +10,10 @@ pub fn event_errors_with_wrong_constraints() {
         .resource_constraints(vec![Resource::new(1, Outline::from(vec![Slot::new(1)]))])
         .build();
 
-    let res = event.assign(vec![Resource::new(2, Outline::from(vec![Slot::new(2)]))]);
+    let res = event.assign(
+        Slot::new(1),
+        vec![Resource::new(2, Outline::from(vec![Slot::new(2)]))],
+    );
 
     assert_eq!(res, Err(()));
 }
@@ -21,14 +24,16 @@ pub fn event_assigns_with_constraints() {
         .resource_constraints(vec![Resource::new(1, Outline::from(vec![Slot::new(1)]))])
         .build();
 
-    let res = event
-        .clone()
-        .assign(vec![Resource::new(1, Outline::from(vec![Slot::new(1)]))]);
+    let res = event.clone().assign(
+        Slot::new(1),
+        vec![Resource::new(1, Outline::from(vec![Slot::new(1)]))],
+    );
 
     assert_eq!(
         res,
         Ok(EventInstance {
             event: event,
+            assigned_slot: Slot::new(1),
             assigned_resources: vec![Resource::new(1, Outline::from(vec![Slot::new(1)],))],
         })
     );

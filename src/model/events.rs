@@ -1,4 +1,6 @@
-use crate::utils;
+use std::{collections::HashMap, hash, ops::Deref};
+
+use crate::utils::{self, has_unique_items};
 
 use super::{
     resources::Resource,
@@ -37,7 +39,11 @@ impl Event {
         }
     }
 
-    pub fn assign(self, assigned_resources: Vec<Resource>) -> Result<EventInstance, ()> {
+    pub fn assign(
+        self,
+        assigned_slot: Slot,
+        assigned_resources: Vec<Resource>,
+    ) -> Result<EventInstance, ()> {
         if utils::is_subset(
             self.resource_constraints.as_ref().unwrap_or(&vec![]),
             &assigned_resources,
@@ -47,6 +53,7 @@ impl Event {
 
         Ok(EventInstance {
             event: self,
+            assigned_slot: assigned_slot,
             assigned_resources: assigned_resources,
         })
     }
@@ -105,5 +112,36 @@ impl EventBuilder {
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub struct EventInstance {
     pub event: Event,
+    pub assigned_slot: Slot,
     pub assigned_resources: Vec<Resource>,
+}
+
+pub struct Schedule {
+    pub event_instances: Vec<EventInstance>,
+}
+
+impl Schedule {
+    pub fn new(event_instances: Vec<EventInstance>) -> Result<Schedule, ()> {
+        let mut map: HashMap<Slot, Vec<Resource>> = HashMap::new();
+
+        for ei in event_instances.iter() {
+            let key: &Slot = &ei.deref().assigned_slot;
+
+            if let Some(value) = map.get_mut(key) {
+                value.extend_from_slice(ei.assigned_resources.as_slice());
+            } else {
+                let mut initial: Vec<Resource> = Vec::new();
+
+                initial.extend_from_slice(ei.assigned_resources.as_slice());
+
+                map.insert(*key, initial);
+            }
+        }
+
+        if map.values().all(|v| has_unique_items(v.iter())) {
+            Ok(Schedule { event_instances })
+        } else {
+            Err(())
+        }
+    }
 }
