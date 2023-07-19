@@ -17,9 +17,6 @@ pub struct Event {
     pub resource_constraints: Option<Vec<Resource>>,
     // Some if constrained to only some slots (which should be a subset of the global outline).
     pub time_constraints: Option<Outline>,
-    // This makes it rather easy to specify the repeats (e.g. daily, weekly,...).
-    // If None, then event occurs only once.
-    pub tags: Vec<u64>,
 }
 
 impl Event {
@@ -28,14 +25,12 @@ impl Event {
         fixed_slot: Option<Slot>,
         resource_constraints: Option<Vec<Resource>>,
         time_constraints: Option<Outline>,
-        tags: Vec<u64>,
     ) -> Event {
         Event {
             id,
             fixed_slot,
             resource_constraints,
             time_constraints,
-            tags,
         }
     }
 
@@ -64,7 +59,6 @@ pub struct EventBuilder {
     fixed_slot: Option<Slot>,
     resource_constraints: Option<Vec<Resource>>,
     time_constraints: Option<Outline>,
-    tags: Vec<u64>,
 }
 
 impl EventBuilder {
@@ -74,7 +68,6 @@ impl EventBuilder {
             fixed_slot: None,
             resource_constraints: None,
             time_constraints: None,
-            tags: vec![],
         }
     }
 
@@ -93,18 +86,12 @@ impl EventBuilder {
         self
     }
 
-    pub fn tags(mut self, tags: Vec<u64>) -> Self {
-        self.tags = tags;
-        self
-    }
-
     pub fn build(self) -> Event {
         Event {
             id: self.id,
             fixed_slot: self.fixed_slot,
             resource_constraints: self.resource_constraints,
             time_constraints: self.time_constraints,
-            tags: self.tags,
         }
     }
 }
