@@ -1,5 +1,5 @@
 use crate::model::{
-    events::{Event, EventBuilder, EventInstance},
+    events::{EventBuilder, EventInstance},
     resources::Resource,
     slots::{Outline, Slot},
 };

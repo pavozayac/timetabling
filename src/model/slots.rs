@@ -1,7 +1,3 @@
-use crate::utils::has_unique_items;
-
-use super::events::EventInstance;
-
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
 pub struct Slot {
     id: i64,

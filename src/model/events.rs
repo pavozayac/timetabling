@@ -1,4 +1,4 @@
-use std::{collections::HashMap, hash, ops::Deref};
+use std::{collections::HashMap, ops::Deref};
 
 use crate::utils::{self, has_unique_items};
 
@@ -78,22 +78,22 @@ impl EventBuilder {
         }
     }
 
-    pub fn fixed_slot(mut self, slot: Slot) -> EventBuilder {
+    pub fn fixed_slot(mut self, slot: Slot) -> Self {
         self.fixed_slot = Some(slot);
         self
     }
 
-    pub fn resource_constraints(mut self, constraints: Vec<Resource>) -> EventBuilder {
+    pub fn resource_constraints(mut self, constraints: Vec<Resource>) -> Self {
         self.resource_constraints = Some(constraints);
         self
     }
 
-    pub fn time_constraints(mut self, constraints: Outline) -> EventBuilder {
+    pub fn time_constraints(mut self, constraints: Outline) -> Self {
         self.time_constraints = Some(constraints);
         self
     }
 
-    pub fn tags(mut self, tags: Vec<u64>) -> EventBuilder {
+    pub fn tags(mut self, tags: Vec<u64>) -> Self {
         self.tags = tags;
         self
     }
@@ -124,6 +124,7 @@ impl Schedule {
     pub fn new(event_instances: Vec<EventInstance>) -> Result<Schedule, ()> {
         let mut map: HashMap<Slot, Vec<Resource>> = HashMap::new();
 
+        // This check ensures that no two EventInstances use the same resources in the same slot
         for ei in event_instances.iter() {
             let key: &Slot = &ei.deref().assigned_slot;
 
