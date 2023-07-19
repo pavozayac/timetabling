@@ -1,2 +1,2 @@
-pub mod model_tests;
+pub mod model;
 pub mod utils;
