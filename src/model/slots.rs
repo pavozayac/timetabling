@@ -17,7 +17,7 @@ pub struct Outline {
 }
 
 impl Outline {
-    pub fn new() -> Outline {
+    pub fn new() -> Self {
         Outline { slots: vec![] }
     }
 
@@ -36,17 +36,6 @@ impl Outline {
             Ok(())
         } else {
             Err(())
-        }
-    }
-}
-
-impl<T> From<T> for Outline
-where
-    T: IntoIterator<Item = Slot>,
-{
-    fn from(value: T) -> Self {
-        Outline {
-            slots: Vec::from_iter(value.into_iter()),
         }
     }
 }
