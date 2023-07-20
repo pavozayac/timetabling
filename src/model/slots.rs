@@ -1,3 +1,5 @@
+use crate::utils::has_unique_items;
+
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
 pub struct Slot {
     id: i64,
@@ -18,10 +20,33 @@ impl Outline {
     pub fn new() -> Outline {
         Outline { slots: vec![] }
     }
+
+    pub fn add_slot(&mut self, slot: Slot) -> Result<(), ()> {
+        if has_unique_items(self.slots.iter().chain(&[slot])) {
+            self.slots.push(slot);
+            Ok(())
+        } else {
+            Err(())
+        }
+    }
+
+    pub fn extend_from_slice(&mut self, slots: &[Slot]) -> Result<(), ()> {
+        if has_unique_items(self.slots.iter().chain(slots)) {
+            self.slots.extend_from_slice(slots);
+            Ok(())
+        } else {
+            Err(())
+        }
+    }
 }
 
-impl From<Vec<Slot>> for Outline {
-    fn from(value: Vec<Slot>) -> Self {
-        Outline { slots: value }
+impl<T> From<T> for Outline
+where
+    T: IntoIterator<Item = Slot>,
+{
+    fn from(value: T) -> Self {
+        Outline {
+            slots: Vec::from_iter(value.into_iter()),
+        }
     }
 }
