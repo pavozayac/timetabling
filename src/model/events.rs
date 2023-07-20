@@ -20,20 +20,6 @@ pub struct Event {
 }
 
 impl Event {
-    pub fn new(
-        id: u64,
-        fixed_slot: Option<Slot>,
-        resource_constraints: Option<Vec<Resource>>,
-        time_constraints: Option<Outline>,
-    ) -> Event {
-        Event {
-            id,
-            fixed_slot,
-            resource_constraints,
-            time_constraints,
-        }
-    }
-
     pub fn assign(
         self,
         assigned_slot: Slot,

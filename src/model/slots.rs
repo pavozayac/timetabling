@@ -18,10 +18,6 @@ impl Outline {
     pub fn new() -> Outline {
         Outline { slots: vec![] }
     }
-
-    pub fn slots_slice(&self) -> &[Slot] {
-        &self.slots
-    }
 }
 
 impl From<Vec<Slot>> for Outline {
