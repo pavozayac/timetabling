@@ -12,14 +12,14 @@ pub fn instantiates_with_no_conflicts() {
     let ei1 = event1
         .assign(
             Slot::new(1),
-            vec![Resource::new(1, Outline::from(vec![Slot::new(1)]))],
+            vec![Resource::new(1, 1, Outline::from(vec![Slot::new(1)]))],
         )
         .unwrap();
 
     let ei2 = event2
         .assign(
             Slot::new(1),
-            vec![Resource::new(2, Outline::from(vec![Slot::new(1)]))],
+            vec![Resource::new(2, 1, Outline::from(vec![Slot::new(1)]))],
         )
         .unwrap();
 
@@ -34,14 +34,14 @@ pub fn fails_with_conflicts() {
     let ei1 = event1
         .assign(
             Slot::new(1),
-            vec![Resource::new(1, Outline::from(vec![Slot::new(1)]))],
+            vec![Resource::new(1, 1, Outline::from(vec![Slot::new(1)]))],
         )
         .unwrap();
 
     let ei2 = event2
         .assign(
             Slot::new(1),
-            vec![Resource::new(1, Outline::from(vec![Slot::new(1)]))],
+            vec![Resource::new(1, 1, Outline::from(vec![Slot::new(1)]))],
         )
         .unwrap();
 
