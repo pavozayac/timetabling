@@ -5,7 +5,7 @@ use crate::model::{
 };
 
 #[test]
-pub fn instantiates_with_no_conflicts() {
+pub fn new_instantiates_with_no_conflicts() {
     let event1 = EventBuilder::new(1).build();
     let event2 = EventBuilder::new(2).build();
 
@@ -24,7 +24,7 @@ pub fn instantiates_with_no_conflicts() {
 }
 
 #[test]
-pub fn fails_with_conflicts() {
+pub fn new_fails_with_conflicts() {
     let event1 = EventBuilder::new(1).build();
     let event2 = EventBuilder::new(2).build();
 
