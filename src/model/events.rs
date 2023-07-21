@@ -25,6 +25,18 @@ impl Event {
         assigned_slot: Slot,
         assigned_resources: Vec<Resource>,
     ) -> Result<EventInstance, ()> {
+        if let Some(fixed_slot) = self.fixed_slot {
+            if fixed_slot != assigned_slot {
+                return Err(());
+            }
+        }
+
+        if let Some(constraints) = self.time_constraints.as_ref() {
+            if !constraints.slots.contains(&assigned_slot) {
+                return Err(());
+            }
+        }
+
         if utils::is_subset(
             self.resource_constraints
                 .as_ref()
