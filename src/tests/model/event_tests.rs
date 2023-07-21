@@ -1,5 +1,5 @@
 use crate::model::{
-    events::{EventBuilder, EventInstance},
+    events::{EventBuilder, EventInstance, ResourceRequirement},
     resources::Resource,
     slots::{Outline, Slot},
 };
@@ -100,6 +100,32 @@ pub fn assign_errors_outside_time_constraints() {
     let event = EventBuilder::new(1).time_constraints(outline).build();
 
     let res = event.clone().assign(Slot::new(1), vec![]);
+
+    assert!(matches!(res, Err(_)));
+}
+
+#[test]
+pub fn assign_succeeds_with_resource_requirements_fulfilled() {
+    let event = EventBuilder::new(1)
+        .resource_requirements(vec![ResourceRequirement::new(1, 1)])
+        .build();
+
+    let res = event
+        .clone()
+        .assign(Slot::new(1), vec![Resource::new(1, 1, Outline::new())]);
+
+    assert!(matches!(res, Ok(_)));
+}
+
+#[test]
+pub fn assign_errors_with_resource_requirements_not_fulfilled() {
+    let event = EventBuilder::new(1)
+        .resource_requirements(vec![ResourceRequirement::new(1, 1)])
+        .build();
+
+    let res = event
+        .clone()
+        .assign(Slot::new(1), vec![Resource::new(1, 2, Outline::new())]);
 
     assert!(matches!(res, Err(_)));
 }

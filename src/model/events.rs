@@ -13,6 +13,15 @@ pub struct ResourceRequirement {
     pub amount: u64,
 }
 
+impl ResourceRequirement {
+    pub fn new(resource_type_id: u64, amount: u64) -> Self {
+        ResourceRequirement {
+            resource_type_id,
+            amount,
+        }
+    }
+}
+
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub struct Event {
     pub id: u64,
