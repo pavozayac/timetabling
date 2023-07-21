@@ -7,6 +7,12 @@ use super::{
     slots::{Outline, Slot},
 };
 
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub struct ResourceRequirement {
+    pub resource_type_id: u64,
+    pub amount: u64,
+}
+
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub struct Event {
     pub id: u64,
@@ -17,6 +23,7 @@ pub struct Event {
     pub resource_constraints: Option<Vec<Resource>>,
     // Some if constrained to only some slots (which should be a subset of the global outline).
     pub time_constraints: Option<Outline>,
+    pub resource_requirements: Option<Vec<ResourceRequirement>>,
 }
 
 impl Event {
@@ -34,6 +41,21 @@ impl Event {
         if let Some(constraints) = self.time_constraints.as_ref() {
             if !constraints.slots.contains(&assigned_slot) {
                 return Err(());
+            }
+        }
+
+        if let Some(requirements) = self.resource_requirements.as_ref() {
+            for rr in requirements {
+                if assigned_resources.iter().fold(0, |acc, x| {
+                    if x.type_id == rr.resource_type_id {
+                        acc + 1
+                    } else {
+                        acc
+                    }
+                }) < rr.amount
+                {
+                    return Err(());
+                }
             }
         }
 
@@ -59,6 +81,7 @@ pub struct EventBuilder {
     fixed_slot: Option<Slot>,
     resource_constraints: Option<Vec<Resource>>,
     time_constraints: Option<Outline>,
+    resource_requirements: Option<Vec<ResourceRequirement>>,
 }
 
 impl EventBuilder {
@@ -68,6 +91,7 @@ impl EventBuilder {
             fixed_slot: None,
             resource_constraints: None,
             time_constraints: None,
+            resource_requirements: None,
         }
     }
 
@@ -86,12 +110,18 @@ impl EventBuilder {
         self
     }
 
+    pub fn resource_requirements(mut self, requirements: Vec<ResourceRequirement>) -> Self {
+        self.resource_requirements = Some(requirements);
+        self
+    }
+
     pub fn build(self) -> Event {
         Event {
             id: self.id,
             fixed_slot: self.fixed_slot,
             resource_constraints: self.resource_constraints,
             time_constraints: self.time_constraints,
+            resource_requirements: self.resource_requirements,
         }
     }
 }
