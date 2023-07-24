@@ -1,4 +1,4 @@
-pub mod traits;
+pub mod simple_chromosome;
 
 use rand::{thread_rng, Rng};
 

@@ -2,11 +2,11 @@ use crate::utils::has_unique_items;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
 pub struct Slot {
-    id: i64,
+    pub id: u64,
 }
 
 impl Slot {
-    pub fn new(id: i64) -> Slot {
+    pub fn new(id: u64) -> Slot {
         Slot { id }
     }
 }
