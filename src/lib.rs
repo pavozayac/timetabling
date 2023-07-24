@@ -1,3 +1,4 @@
+mod ga;
 mod model;
 mod utils;
 
