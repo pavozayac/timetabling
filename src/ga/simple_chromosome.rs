@@ -44,12 +44,12 @@ impl Chromosome for SimpleChromosome {
         self.slot_allocations[usize::from(event)] = slot;
     }
 
-    fn get_resources(&self, event: EventID) -> &[Vec<(ResourceID, ResourceTypeID)>] {
-        &self.resource_allocations
+    fn get_resources(&self, event: EventID) -> &[(ResourceID, ResourceTypeID)] {
+        &self.resource_allocations[usize::from(event)]
     }
 
-    fn get_resources_mut(&mut self, event: EventID) -> &mut Vec<Vec<(ResourceID, ResourceTypeID)>> {
-        &mut self.resource_allocations
+    fn get_resources_mut(&mut self, event: EventID) -> &mut Vec<(ResourceID, ResourceTypeID)> {
+        &mut self.resource_allocations[usize::from(event)]
     }
 
     fn is_correct(&self, events: &[Event], outline: Outline, resources: &[Resource]) -> bool {
