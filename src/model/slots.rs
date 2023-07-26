@@ -1,12 +1,14 @@
 use crate::utils::has_unique_items;
 
+use super::SlotID;
+
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
 pub struct Slot {
-    pub id: u64,
+    pub id: SlotID,
 }
 
 impl Slot {
-    pub fn new(id: u64) -> Slot {
+    pub fn new(id: SlotID) -> Slot {
         Slot { id }
     }
 }

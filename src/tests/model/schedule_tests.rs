@@ -2,7 +2,7 @@ use crate::model::{
     events::{EventBuilder, Schedule},
     resources::Resource,
     slots::{Outline, Slot},
-    EventID,
+    EventID, SlotID,
 };
 
 #[test]
@@ -11,14 +11,17 @@ pub fn new_instantiates_with_no_conflicts() {
     let event2 = EventBuilder::new(EventID(2)).build();
 
     let mut outline = Outline::new();
-    outline.extend_from_slice(&[Slot::new(1)]).unwrap();
+    outline.extend_from_slice(&[Slot::new(SlotID(1))]).unwrap();
 
     let ei1 = event1
-        .assign(Slot::new(1), vec![Resource::new(1, 1, outline.clone())])
+        .assign(
+            Slot::new(SlotID(1)),
+            vec![Resource::new(1, 1, outline.clone())],
+        )
         .unwrap();
 
     let ei2 = event2
-        .assign(Slot::new(1), vec![Resource::new(2, 1, outline)])
+        .assign(Slot::new(SlotID(1)), vec![Resource::new(2, 1, outline)])
         .unwrap();
 
     assert!(matches!(Schedule::new(vec![ei1, ei2]), Ok(_)));
@@ -30,14 +33,17 @@ pub fn new_fails_with_conflicts() {
     let event2 = EventBuilder::new(EventID(2)).build();
 
     let mut outline = Outline::new();
-    outline.extend_from_slice(&[Slot::new(1)]).unwrap();
+    outline.extend_from_slice(&[Slot::new(SlotID(1))]).unwrap();
 
     let ei1 = event1
-        .assign(Slot::new(1), vec![Resource::new(1, 1, outline.clone())])
+        .assign(
+            Slot::new(SlotID(1)),
+            vec![Resource::new(1, 1, outline.clone())],
+        )
         .unwrap();
 
     let ei2 = event2
-        .assign(Slot::new(1), vec![Resource::new(1, 1, outline)])
+        .assign(Slot::new(SlotID(1)), vec![Resource::new(1, 1, outline)])
         .unwrap();
 
     assert!(matches!(Schedule::new(vec![ei1, ei2]), Err(_)));
