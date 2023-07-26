@@ -35,20 +35,8 @@ impl Chromosome for SimpleChromosome {
         }
     }
 
-    fn has_allocation(&self, event: Event, slot: Slot) -> bool {
-        if let Some(slot_id) = self.slot_allocations.get(event.id as usize) {
-            *slot_id == slot.id
-        } else {
-            false
-        }
-    }
-
-    fn has_resource(&self, event: Event, resource: Resource) -> bool {
-        if let Some(resources) = self.resource_allocations.get(event.id as usize) {
-            resources.contains(&(resource.id, resource.type_id))
-        } else {
-            false
-        }
+    fn get_slot(&self, event: Event) -> &Slot {
+        &self.slot_allocations[event.id as usize]
     }
 
     fn is_correct(&self, events: &[Event], outline: Outline, resources: &[Resource]) -> bool {

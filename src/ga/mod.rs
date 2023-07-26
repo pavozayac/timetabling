@@ -10,8 +10,11 @@ use crate::model::{
 
 pub trait Chromosome: Sized {
     fn new(event_instances: &[EventInstance]) -> Self;
-    fn has_allocation(&self, event: Event, slot: Slot) -> bool;
-    fn has_resource(&self, event: Event, resource: Resource) -> bool;
+    fn get_slot(&self, event: Event) -> &Slot;
+    fn get_slot_mut(&mut self, event: Event) -> &mut Slot;
+    fn get_resources(&self, event: Event) -> &[Resource];
+    fn get_resources_mut(&mut self, event: Event) -> &mut Vec<Resource>;
+
     fn is_correct(&self, events: &[Event], outline: Outline, resources: &[Resource]) -> bool;
     fn schedule(&self) -> Result<Schedule, ()>;
 

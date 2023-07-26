@@ -5,6 +5,7 @@ use crate::utils::{self, has_unique_items};
 use super::{
     resources::Resource,
     slots::{Outline, Slot},
+    EventID,
 };
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -24,7 +25,7 @@ impl ResourceRequirement {
 
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub struct Event {
-    pub id: u64,
+    pub id: EventID,
     // This is Some(slot) if the event is always supposed to be in one particular slot.
     pub fixed_slot: Option<Slot>,
     // This is Some if there are any constraints on resources, None if they can be
@@ -86,7 +87,7 @@ impl Event {
 }
 
 pub struct EventBuilder {
-    id: u64,
+    id: EventID,
     fixed_slot: Option<Slot>,
     resource_constraints: Option<Vec<Resource>>,
     time_constraints: Option<Outline>,
@@ -94,7 +95,7 @@ pub struct EventBuilder {
 }
 
 impl EventBuilder {
-    pub fn new(id: u64) -> EventBuilder {
+    pub fn new(id: EventID) -> EventBuilder {
         EventBuilder {
             id: id,
             fixed_slot: None,

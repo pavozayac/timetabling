@@ -2,12 +2,13 @@ use crate::model::{
     events::{EventBuilder, Schedule},
     resources::Resource,
     slots::{Outline, Slot},
+    EventID,
 };
 
 #[test]
 pub fn new_instantiates_with_no_conflicts() {
-    let event1 = EventBuilder::new(1).build();
-    let event2 = EventBuilder::new(2).build();
+    let event1 = EventBuilder::new(EventID(1)).build();
+    let event2 = EventBuilder::new(EventID(2)).build();
 
     let mut outline = Outline::new();
     outline.extend_from_slice(&[Slot::new(1)]).unwrap();
@@ -25,8 +26,8 @@ pub fn new_instantiates_with_no_conflicts() {
 
 #[test]
 pub fn new_fails_with_conflicts() {
-    let event1 = EventBuilder::new(1).build();
-    let event2 = EventBuilder::new(2).build();
+    let event1 = EventBuilder::new(EventID(1)).build();
+    let event2 = EventBuilder::new(EventID(2)).build();
 
     let mut outline = Outline::new();
     outline.extend_from_slice(&[Slot::new(1)]).unwrap();

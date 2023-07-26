@@ -2,6 +2,7 @@ use crate::model::{
     events::{EventBuilder, EventInstance, ResourceRequirement},
     resources::Resource,
     slots::{Outline, Slot},
+    EventID,
 };
 
 #[test]
@@ -9,7 +10,7 @@ pub fn assign_errors_with_incorrect_resource_constraints() {
     let mut outline = Outline::new();
     outline.extend_from_slice(&[Slot::new(1)]).unwrap();
 
-    let event = EventBuilder::new(1)
+    let event = EventBuilder::new(EventID(1))
         .resource_constraints(vec![Resource::new(1, 1, outline.clone())])
         .build();
 
@@ -23,7 +24,7 @@ pub fn assign_succeeds_with_correct_resource_constraints() {
     let mut outline = Outline::new();
     outline.extend_from_slice(&[Slot::new(1)]).unwrap();
 
-    let event = EventBuilder::new(1)
+    let event = EventBuilder::new(EventID(1))
         .resource_constraints(vec![Resource::new(1, 1, outline.clone())])
         .build();
 
@@ -46,7 +47,7 @@ pub fn assign_succeeds_with_no_resource_constraints() {
     let mut outline = Outline::new();
     outline.extend_from_slice(&[Slot::new(1)]).unwrap();
 
-    let event = EventBuilder::new(1).build();
+    let event = EventBuilder::new(EventID(1)).build();
 
     let res = event
         .clone()
@@ -64,7 +65,9 @@ pub fn assign_succeeds_with_no_resource_constraints() {
 
 #[test]
 pub fn assign_succeeds_with_correct_fixed_slot() {
-    let event = EventBuilder::new(1).fixed_slot(Slot::new(1)).build();
+    let event = EventBuilder::new(EventID(1))
+        .fixed_slot(Slot::new(1))
+        .build();
 
     let res = event.clone().assign(Slot::new(1), vec![]);
 
@@ -73,7 +76,9 @@ pub fn assign_succeeds_with_correct_fixed_slot() {
 
 #[test]
 pub fn assign_errors_with_wrong_fixed_slot() {
-    let event = EventBuilder::new(1).fixed_slot(Slot::new(2)).build();
+    let event = EventBuilder::new(EventID(1))
+        .fixed_slot(Slot::new(2))
+        .build();
 
     let res = event.clone().assign(Slot::new(1), vec![]);
 
@@ -85,7 +90,9 @@ pub fn assign_succeeds_within_time_constraints() {
     let mut outline = Outline::new();
     outline.extend_from_slice(&[Slot::new(1)]).unwrap();
 
-    let event = EventBuilder::new(1).time_constraints(outline).build();
+    let event = EventBuilder::new(EventID(1))
+        .time_constraints(outline)
+        .build();
 
     let res = event.clone().assign(Slot::new(1), vec![]);
 
@@ -97,7 +104,9 @@ pub fn assign_errors_outside_time_constraints() {
     let mut outline = Outline::new();
     outline.extend_from_slice(&[Slot::new(2)]).unwrap();
 
-    let event = EventBuilder::new(1).time_constraints(outline).build();
+    let event = EventBuilder::new(EventID(1))
+        .time_constraints(outline)
+        .build();
 
     let res = event.clone().assign(Slot::new(1), vec![]);
 
@@ -106,7 +115,7 @@ pub fn assign_errors_outside_time_constraints() {
 
 #[test]
 pub fn assign_succeeds_with_resource_requirements_fulfilled() {
-    let event = EventBuilder::new(1)
+    let event = EventBuilder::new(EventID(1))
         .resource_requirements(vec![ResourceRequirement::new(1, 1)])
         .build();
 
@@ -119,7 +128,7 @@ pub fn assign_succeeds_with_resource_requirements_fulfilled() {
 
 #[test]
 pub fn assign_errors_with_resource_requirements_not_fulfilled() {
-    let event = EventBuilder::new(1)
+    let event = EventBuilder::new(EventID(1))
         .resource_requirements(vec![ResourceRequirement::new(1, 1)])
         .build();
 
