@@ -6,14 +6,15 @@ use crate::model::{
     events::{Event, EventInstance, Schedule},
     resources::Resource,
     slots::{Outline, Slot},
+    EventID, ResourceID, ResourceTypeID, SlotID,
 };
 
 pub trait Chromosome: Sized {
     fn new(event_instances: &[EventInstance]) -> Self;
-    fn get_slot(&self, event: Event) -> &Slot;
-    fn get_slot_mut(&mut self, event: Event) -> &mut Slot;
-    fn get_resources(&self, event: Event) -> &[Resource];
-    fn get_resources_mut(&mut self, event: Event) -> &mut Vec<Resource>;
+    fn get_slot(&self, event: EventID) -> SlotID;
+    fn set_slot(&mut self, event: EventID, slot: SlotID);
+    fn get_resources(&self, event: EventID) -> &[Vec<(ResourceID, ResourceTypeID)>];
+    fn get_resources_mut(&mut self, event: EventID) -> &mut Vec<Vec<(ResourceID, ResourceTypeID)>>;
 
     fn is_correct(&self, events: &[Event], outline: Outline, resources: &[Resource]) -> bool;
     fn schedule(&self) -> Result<Schedule, ()>;

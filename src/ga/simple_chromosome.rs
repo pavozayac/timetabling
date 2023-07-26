@@ -2,6 +2,7 @@ use crate::model::{
     events::{Event, EventBuilder, EventInstance, Schedule},
     resources::Resource,
     slots::{Outline, Slot},
+    EventID, ResourceID, ResourceTypeID, SlotID,
 };
 
 use super::Chromosome;
@@ -9,8 +10,8 @@ use super::Chromosome;
 // Implementation assumes events are given as a contiguous group
 // starting with id 0
 pub struct SimpleChromosome {
-    slot_allocations: Vec<u64>,
-    resource_allocations: Vec<Vec<(u64, u64)>>,
+    slot_allocations: Vec<SlotID>,
+    resource_allocations: Vec<Vec<(ResourceID, ResourceTypeID)>>,
 }
 
 impl Chromosome for SimpleChromosome {
@@ -35,8 +36,20 @@ impl Chromosome for SimpleChromosome {
         }
     }
 
-    fn get_slot(&self, event: Event) -> &Slot {
-        &self.slot_allocations[event.id]
+    fn get_slot(&self, event: EventID) -> SlotID {
+        self.slot_allocations[usize::from(event)]
+    }
+
+    fn set_slot(&mut self, event: EventID, slot: SlotID) {
+        self.slot_allocations[usize::from(event)] = slot;
+    }
+
+    fn get_resources(&self, event: EventID) -> &[Vec<(ResourceID, ResourceTypeID)>] {
+        &self.resource_allocations
+    }
+
+    fn get_resources_mut(&mut self, event: EventID) -> &mut Vec<Vec<(ResourceID, ResourceTypeID)>> {
+        &mut self.resource_allocations
     }
 
     fn is_correct(&self, events: &[Event], outline: Outline, resources: &[Resource]) -> bool {
@@ -47,8 +60,8 @@ impl Chromosome for SimpleChromosome {
         let mut event_instances = vec![];
 
         for (i, e) in self.slot_allocations.iter().enumerate() {
-            let instance = EventBuilder::new(*e).build().assign(
-                Slot::new(i as u64),
+            let instance = EventBuilder::new(EventID(i)).build().assign(
+                Slot::new(*e),
                 self.resource_allocations[i]
                     .iter()
                     .map(|(r, t)| Resource::new(*r, *t, Outline::new()))
