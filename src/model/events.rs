@@ -5,17 +5,17 @@ use crate::utils::{self, has_unique_items};
 use super::{
     resources::Resource,
     slots::{Outline, Slot},
-    EventID,
+    EventID, ResourceTypeID,
 };
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct ResourceRequirement {
-    pub resource_type_id: u64,
+    pub resource_type_id: ResourceTypeID,
     pub amount: u64,
 }
 
 impl ResourceRequirement {
-    pub fn new(resource_type_id: u64, amount: u64) -> Self {
+    pub fn new(resource_type_id: ResourceTypeID, amount: u64) -> Self {
         ResourceRequirement {
             resource_type_id,
             amount,

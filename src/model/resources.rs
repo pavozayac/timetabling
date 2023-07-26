@@ -1,16 +1,16 @@
 use std::hash::Hash;
 
-use super::slots::Outline;
+use super::{slots::Outline, ResourceID, ResourceTypeID};
 
 #[derive(Clone, Debug)]
 pub struct Resource {
-    pub id: u64,
-    pub type_id: u64,
+    pub id: ResourceID,
+    pub type_id: ResourceTypeID,
     pub availability: Outline,
 }
 
 impl Resource {
-    pub fn new(id: u64, type_id: u64, availability: Outline) -> Resource {
+    pub fn new(id: ResourceID, type_id: ResourceTypeID, availability: Outline) -> Resource {
         Resource {
             id,
             type_id,

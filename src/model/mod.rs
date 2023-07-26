@@ -8,3 +8,5 @@ pub struct EventID(pub usize);
 pub struct SlotID(pub usize);
 #[derive(Hash, Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub struct ResourceID(pub usize);
+#[derive(Hash, Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub struct ResourceTypeID(pub usize);

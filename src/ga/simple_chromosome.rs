@@ -36,7 +36,7 @@ impl Chromosome for SimpleChromosome {
     }
 
     fn get_slot(&self, event: Event) -> &Slot {
-        &self.slot_allocations[event.id as usize]
+        &self.slot_allocations[event.id]
     }
 
     fn is_correct(&self, events: &[Event], outline: Outline, resources: &[Resource]) -> bool {

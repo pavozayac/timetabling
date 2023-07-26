@@ -2,7 +2,7 @@ use crate::model::{
     events::{EventBuilder, EventInstance, ResourceRequirement},
     resources::Resource,
     slots::{Outline, Slot},
-    EventID, SlotID,
+    EventID, ResourceID, ResourceTypeID, SlotID,
 };
 
 #[test]
@@ -11,10 +11,17 @@ pub fn assign_errors_with_incorrect_resource_constraints() {
     outline.extend_from_slice(&[Slot::new(SlotID(1))]).unwrap();
 
     let event = EventBuilder::new(EventID(1))
-        .resource_constraints(vec![Resource::new(1, 1, outline.clone())])
+        .resource_constraints(vec![Resource::new(
+            ResourceID(1),
+            ResourceTypeID(1),
+            outline.clone(),
+        )])
         .build();
 
-    let res = event.assign(Slot::new(SlotID(1)), vec![Resource::new(2, 1, outline)]);
+    let res = event.assign(
+        Slot::new(SlotID(1)),
+        vec![Resource::new(ResourceID(2), ResourceTypeID(1), outline)],
+    );
 
     assert_eq!(res, Err(()));
 }
@@ -25,12 +32,20 @@ pub fn assign_succeeds_with_correct_resource_constraints() {
     outline.extend_from_slice(&[Slot::new(SlotID(1))]).unwrap();
 
     let event = EventBuilder::new(EventID(1))
-        .resource_constraints(vec![Resource::new(1, 1, outline.clone())])
+        .resource_constraints(vec![Resource::new(
+            ResourceID(1),
+            ResourceTypeID(1),
+            outline.clone(),
+        )])
         .build();
 
     let res = event.clone().assign(
         Slot::new(SlotID(1)),
-        vec![Resource::new(1, 1, outline.clone())],
+        vec![Resource::new(
+            ResourceID(1),
+            ResourceTypeID(1),
+            outline.clone(),
+        )],
     );
 
     assert_eq!(
@@ -38,7 +53,7 @@ pub fn assign_succeeds_with_correct_resource_constraints() {
         Ok(EventInstance {
             event: event,
             assigned_slot: Slot::new(SlotID(1)),
-            assigned_resources: vec![Resource::new(1, 1, outline)],
+            assigned_resources: vec![Resource::new(ResourceID(1), ResourceTypeID(1), outline)],
         })
     );
 }
@@ -52,7 +67,11 @@ pub fn assign_succeeds_with_no_resource_constraints() {
 
     let res = event.clone().assign(
         Slot::new(SlotID(1)),
-        vec![Resource::new(1, 1, outline.clone())],
+        vec![Resource::new(
+            ResourceID(1),
+            ResourceTypeID(1),
+            outline.clone(),
+        )],
     );
 
     assert_eq!(
@@ -60,7 +79,7 @@ pub fn assign_succeeds_with_no_resource_constraints() {
         Ok(EventInstance {
             event: event,
             assigned_slot: Slot::new(SlotID(1)),
-            assigned_resources: vec![Resource::new(1, 1, outline)],
+            assigned_resources: vec![Resource::new(ResourceID(1), ResourceTypeID(1), outline)],
         })
     );
 }
@@ -118,12 +137,16 @@ pub fn assign_errors_outside_time_constraints() {
 #[test]
 pub fn assign_succeeds_with_resource_requirements_fulfilled() {
     let event = EventBuilder::new(EventID(1))
-        .resource_requirements(vec![ResourceRequirement::new(1, 1)])
+        .resource_requirements(vec![ResourceRequirement::new(ResourceTypeID(1), 1)])
         .build();
 
     let res = event.clone().assign(
         Slot::new(SlotID(1)),
-        vec![Resource::new(1, 1, Outline::new())],
+        vec![Resource::new(
+            ResourceID(1),
+            ResourceTypeID(1),
+            Outline::new(),
+        )],
     );
 
     assert!(matches!(res, Ok(_)));
@@ -132,12 +155,16 @@ pub fn assign_succeeds_with_resource_requirements_fulfilled() {
 #[test]
 pub fn assign_errors_with_resource_requirements_not_fulfilled() {
     let event = EventBuilder::new(EventID(1))
-        .resource_requirements(vec![ResourceRequirement::new(1, 1)])
+        .resource_requirements(vec![ResourceRequirement::new(ResourceTypeID(1), 1)])
         .build();
 
     let res = event.clone().assign(
         Slot::new(SlotID(1)),
-        vec![Resource::new(1, 2, Outline::new())],
+        vec![Resource::new(
+            ResourceID(1),
+            ResourceTypeID(2),
+            Outline::new(),
+        )],
     );
 
     assert!(matches!(res, Err(_)));
