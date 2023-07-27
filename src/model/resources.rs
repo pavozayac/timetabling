@@ -37,3 +37,23 @@ impl Hash for Resource {
         self.type_id.hash(state);
     }
 }
+
+impl PartialOrd for Resource {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        if self.id != other.id {
+            self.type_id.partial_cmp(&other.type_id)
+        } else {
+            self.id.partial_cmp(&other.id)
+        }
+    }
+}
+
+impl Ord for Resource {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        if self.id != other.id {
+            self.type_id.cmp(&other.type_id)
+        } else {
+            self.id.cmp(&other.id)
+        }
+    }
+}

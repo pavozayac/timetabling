@@ -3,9 +3,9 @@ pub mod simple_chromosome;
 use rand::{thread_rng, Rng};
 
 use crate::model::{
-    events::{Event, EventInstance, Schedule},
+    events::{EventInstance, Schedule},
     resources::Resource,
-    slots::{Outline, Slot},
+    slots::Slot,
     EventID, ProblemDomain, ResourceID, ResourceTypeID, SlotID,
 };
 
