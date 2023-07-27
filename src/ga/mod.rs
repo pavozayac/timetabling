@@ -6,7 +6,7 @@ use crate::model::{
     events::{Event, EventInstance, Schedule},
     resources::Resource,
     slots::{Outline, Slot},
-    EventID, ResourceID, ResourceTypeID, SlotID,
+    EventID, ProblemDomain, ResourceID, ResourceTypeID, SlotID,
 };
 
 pub trait Chromosome: Sized {
@@ -16,16 +16,16 @@ pub trait Chromosome: Sized {
     fn get_resources(&self, event: EventID) -> &[(ResourceID, ResourceTypeID)];
     fn get_resources_mut(&mut self, event: EventID) -> &mut Vec<(ResourceID, ResourceTypeID)>;
 
-    fn is_correct(&self, events: &[Event], outline: Outline, resources: &[Resource]) -> bool;
+    fn is_correct(&self, domain: &ProblemDomain) -> bool;
     fn schedule(&self) -> Result<Schedule, ()>;
 
-    fn random(&self, events: &[Event], outline: Outline, resources: &[Resource]) -> Self {
+    fn random(&self, domain: &ProblemDomain) -> Self {
         let mut event_instances: Vec<EventInstance> = vec![];
 
         let mut rng = thread_rng();
 
-        for e in events {
-            let slot: Slot = outline.slots[rng.gen_range(0..outline.slots.len())];
+        for e in domain.events.iter() {
+            let slot: Slot = domain.outline.slots[rng.gen_range(0..domain.outline.slots.len())];
             let mut allocated_resources: Vec<Resource> = vec![];
 
             for _ in 0..e
@@ -35,7 +35,8 @@ pub trait Chromosome: Sized {
                 .iter()
                 .fold(0, |acc, x| acc + x.amount)
             {
-                allocated_resources.push(resources[rng.gen_range(0..resources.len())].clone());
+                allocated_resources
+                    .push(domain.resources[rng.gen_range(0..domain.resources.len())].clone());
             }
 
             event_instances.push(EventInstance {
@@ -50,13 +51,7 @@ pub trait Chromosome: Sized {
 }
 
 pub trait FitnessEvaluator<T: Chromosome> {
-    fn calculate_fitness(
-        &self,
-        chromosome: T,
-        events: &[Event],
-        outline: Outline,
-        resources: &[Resource],
-    ) -> i64;
+    fn calculate_fitness(&self, chromosome: T, domain: &ProblemDomain) -> i64;
 }
 
 pub trait Mutation {

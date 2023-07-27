@@ -1,3 +1,5 @@
+use self::{events::Event, resources::Resource, slots::Outline};
+
 pub mod events;
 pub mod resources;
 pub mod slots;
@@ -32,5 +34,21 @@ impl From<ResourceID> for usize {
 impl From<ResourceTypeID> for usize {
     fn from(value: ResourceTypeID) -> Self {
         value.0
+    }
+}
+
+pub struct ProblemDomain {
+    pub events: Vec<Event>,
+    pub outline: Outline,
+    pub resources: Vec<Resource>,
+}
+
+impl ProblemDomain {
+    fn new(events: Vec<Event>, outline: Outline, resources: Vec<Resource>) -> Self {
+        ProblemDomain {
+            events,
+            outline,
+            resources,
+        }
     }
 }

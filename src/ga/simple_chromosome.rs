@@ -2,12 +2,12 @@ use crate::model::{
     events::{Event, EventBuilder, EventInstance, Schedule},
     resources::Resource,
     slots::{Outline, Slot},
-    EventID, ResourceID, ResourceTypeID, SlotID,
+    EventID, ProblemDomain, ResourceID, ResourceTypeID, SlotID,
 };
 
 use super::Chromosome;
 
-// Implementation assumes events are given as a contiguous group
+// Implementation assumes events, slots and resources are given as a contiguous group
 // starting with id 0
 pub struct SimpleChromosome {
     slot_allocations: Vec<SlotID>,
@@ -52,7 +52,7 @@ impl Chromosome for SimpleChromosome {
         &mut self.resource_allocations[usize::from(event)]
     }
 
-    fn is_correct(&self, events: &[Event], outline: Outline, resources: &[Resource]) -> bool {
+    fn is_correct(&self, domain: &ProblemDomain) -> bool {
         self.schedule().is_ok()
     }
 
