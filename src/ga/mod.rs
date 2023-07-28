@@ -14,10 +14,12 @@ use crate::{
 
 pub trait Chromosome: Sized {
     fn new(event_instances: &[EventInstance]) -> Self;
+    fn events_count(&self) -> usize;
     fn get_slot(&self, event: EventID) -> SlotID;
     fn set_slot(&mut self, event: EventID, slot: SlotID);
     fn get_resources(&self, event: EventID) -> &[(ResourceID, ResourceTypeID)];
-    fn get_resources_mut(&mut self, event: EventID) -> &mut Vec<(ResourceID, ResourceTypeID)>;
+    fn get_resources_mut(&mut self, event: EventID) -> &mut [(ResourceID, ResourceTypeID)];
+    fn schedule(&self) -> Result<Schedule, ()>;
 
     fn is_correct(&self, domain: &ProblemDomain) -> bool {
         let mut events_in_bounds = true;
@@ -29,6 +31,12 @@ pub trait Chromosome: Sized {
                     .slots
                     .contains(&self.get_slot(EventID(event_id)))
                 {
+                    events_in_bounds = false;
+                }
+            }
+
+            if let Some(fixed_slot) = &domain.events[event_id].fixed_slot {
+                if self.get_slot(EventID(event_id)) != *fixed_slot {
                     events_in_bounds = false;
                 }
             }
@@ -56,11 +64,29 @@ pub trait Chromosome: Sized {
                     }
                 }
             }
+
+            for reqs in &domain.events[event_id].resource_requirements {
+                for req in reqs {
+                    if self
+                        .get_resources(EventID(event_id))
+                        .iter()
+                        .fold(0, |acc, x| {
+                            if x.1 == req.resource_type_id {
+                                acc + 1
+                            } else {
+                                acc
+                            }
+                        })
+                        < req.amount
+                    {
+                        resources_in_bounds = false;
+                    }
+                }
+            }
         }
 
-        self.schedule().is_ok() && events_in_bounds && resources_in_bounds
+        events_in_bounds && resources_in_bounds
     }
-    fn schedule(&self) -> Result<Schedule, ()>;
 
     fn random(&self, domain: &ProblemDomain) -> Self {
         let mut event_instances: Vec<EventInstance> = vec![];

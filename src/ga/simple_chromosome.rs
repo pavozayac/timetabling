@@ -36,6 +36,10 @@ impl Chromosome for SimpleChromosome {
         }
     }
 
+    fn events_count(&self) -> usize {
+        self.slot_allocations.len()
+    }
+
     fn get_slot(&self, event: EventID) -> SlotID {
         self.slot_allocations[usize::from(event)]
     }
@@ -48,7 +52,7 @@ impl Chromosome for SimpleChromosome {
         &self.resource_allocations[usize::from(event)]
     }
 
-    fn get_resources_mut(&mut self, event: EventID) -> &mut Vec<(ResourceID, ResourceTypeID)> {
+    fn get_resources_mut(&mut self, event: EventID) -> &mut [(ResourceID, ResourceTypeID)] {
         &mut self.resource_allocations[usize::from(event)]
     }
 
