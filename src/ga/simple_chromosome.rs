@@ -1,11 +1,8 @@
-use crate::{
-    model::{
-        events::{EventBuilder, EventInstance, Schedule},
-        resources::Resource,
-        slots::Outline,
-        EventID, ProblemDomain, ResourceID, ResourceTypeID, SlotID,
-    },
-    utils::is_subset,
+use crate::model::{
+    events::{EventBuilder, EventInstance, Schedule},
+    resources::Resource,
+    slots::Outline,
+    EventID, ResourceID, ResourceTypeID, SlotID,
 };
 
 use super::Chromosome;
@@ -53,48 +50,6 @@ impl Chromosome for SimpleChromosome {
 
     fn get_resources_mut(&mut self, event: EventID) -> &mut Vec<(ResourceID, ResourceTypeID)> {
         &mut self.resource_allocations[usize::from(event)]
-    }
-
-    fn is_correct(&self, domain: &ProblemDomain) -> bool {
-        let mut events_in_bounds = true;
-        let mut resources_in_bounds = true;
-
-        for event_id in 0..self.slot_allocations.len() {
-            if let Some(constraints) = &domain.events[event_id].time_constraints {
-                if !constraints
-                    .slots
-                    .contains(&self.get_slot(EventID(event_id)))
-                {
-                    events_in_bounds = false;
-                }
-            }
-
-            if let Some(requirements) = &domain.events[event_id].resource_constraints {
-                if !is_subset(
-                    requirements.iter().map(|x| (x.id, x.type_id)),
-                    self.resource_allocations[event_id]
-                        .iter()
-                        .map(|x| (x.0, x.1)),
-                ) {
-                    resources_in_bounds = false;
-                }
-            }
-
-            for (r_id, r_type_id) in self.resource_allocations[event_id].iter() {
-                let r = Resource::new(*r_id, *r_type_id, Outline::new());
-                if let Ok(result) = &domain.resources.binary_search(&r) {
-                    if !&domain.resources[*result]
-                        .availability
-                        .slots
-                        .contains(&self.slot_allocations[event_id])
-                    {
-                        resources_in_bounds = false;
-                    }
-                }
-            }
-        }
-
-        self.schedule().is_ok() && events_in_bounds && resources_in_bounds
     }
 
     fn schedule(&self) -> Result<Schedule, ()> {

@@ -2,11 +2,14 @@ pub mod simple_chromosome;
 
 use rand::{thread_rng, Rng};
 
-use crate::model::{
-    events::{EventInstance, Schedule},
-    resources::Resource,
-    slots::Slot,
-    EventID, ProblemDomain, ResourceID, ResourceTypeID, SlotID,
+use crate::{
+    model::{
+        events::{EventInstance, Schedule},
+        resources::Resource,
+        slots::{Outline, Slot},
+        EventID, ProblemDomain, ResourceID, ResourceTypeID, SlotID,
+    },
+    utils::is_subset,
 };
 
 pub trait Chromosome: Sized {
@@ -16,7 +19,47 @@ pub trait Chromosome: Sized {
     fn get_resources(&self, event: EventID) -> &[(ResourceID, ResourceTypeID)];
     fn get_resources_mut(&mut self, event: EventID) -> &mut Vec<(ResourceID, ResourceTypeID)>;
 
-    fn is_correct(&self, domain: &ProblemDomain) -> bool;
+    fn is_correct(&self, domain: &ProblemDomain) -> bool {
+        let mut events_in_bounds = true;
+        let mut resources_in_bounds = true;
+
+        for event_id in 0..domain.events.len() {
+            if let Some(constraints) = &domain.events[event_id].time_constraints {
+                if !constraints
+                    .slots
+                    .contains(&self.get_slot(EventID(event_id)))
+                {
+                    events_in_bounds = false;
+                }
+            }
+
+            if let Some(requirements) = &domain.events[event_id].resource_constraints {
+                if !is_subset(
+                    requirements.iter().map(|x| (x.id, x.type_id)),
+                    self.get_resources(EventID(event_id))
+                        .iter()
+                        .map(|x| (x.0, x.1)),
+                ) {
+                    resources_in_bounds = false;
+                }
+            }
+
+            for (r_id, r_type_id) in self.get_resources(EventID(event_id)).iter() {
+                let r = Resource::new(*r_id, *r_type_id, Outline::new());
+                if let Ok(result) = &domain.resources.binary_search(&r) {
+                    if !&domain.resources[*result]
+                        .availability
+                        .slots
+                        .contains(&self.get_slot(EventID(event_id)))
+                    {
+                        resources_in_bounds = false;
+                    }
+                }
+            }
+        }
+
+        self.schedule().is_ok() && events_in_bounds && resources_in_bounds
+    }
     fn schedule(&self) -> Result<Schedule, ()>;
 
     fn random(&self, domain: &ProblemDomain) -> Self {
@@ -51,17 +94,17 @@ pub trait Chromosome: Sized {
 }
 
 pub trait FitnessEvaluator<T: Chromosome> {
-    fn calculate_fitness(&self, chromosome: T, domain: &ProblemDomain) -> i64;
+    fn calculate_fitness(&self, chromosome: T, domain: &ProblemDomain) -> f64;
 }
 
 pub trait Mutation {
-    fn mutation<T: Chromosome>(&self, chromosome: T) -> T;
+    fn apply_mutation<T: Chromosome>(&mut self, chromosome: &mut T);
 }
 
 pub trait Crossover {
-    fn crossover<T: Chromosome>(&self, lhs: T, rhs: T) -> T;
+    fn crossover<T: Chromosome>(&mut self, lhs: T, rhs: T) -> T;
 }
 
 pub trait Selection {
-    fn selection<T: Chromosome>(&self, pool: Vec<T>) -> Vec<T>;
+    fn apply_selection<T: Chromosome>(&mut self, pool: &mut Vec<T>);
 }
