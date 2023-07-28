@@ -1,7 +1,7 @@
 use crate::model::{
     resources::Resource,
     slots::{Outline, Slot},
-    ResourceID, ResourceTypeID, SlotID,
+    ResourceID, ResourceTypeID,
 };
 
 #[test]
@@ -23,7 +23,7 @@ pub fn inequality_returns_true_if_not_equals() {
 #[test]
 pub fn equality_returns_true_if_equals_omitting_outline() {
     let mut outline: Outline = Outline::new();
-    outline.extend_from_slice(&[Slot::new(SlotID(1))]).unwrap();
+    outline.extend_from_slice(&[Slot::new(1)]).unwrap();
 
     let r1: Resource = Resource::new(ResourceID(1), ResourceTypeID(2), Outline::new());
     let r2: Resource = Resource::new(ResourceID(1), ResourceTypeID(2), outline);

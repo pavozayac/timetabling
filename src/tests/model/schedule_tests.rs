@@ -2,7 +2,7 @@ use crate::model::{
     events::{EventBuilder, Schedule},
     resources::Resource,
     slots::{Outline, Slot},
-    EventID, ResourceID, ResourceTypeID, SlotID,
+    EventID, ResourceID, ResourceTypeID,
 };
 
 #[test]
@@ -11,11 +11,11 @@ pub fn new_instantiates_with_no_conflicts() {
     let event2 = EventBuilder::new(EventID(2)).build();
 
     let mut outline = Outline::new();
-    outline.extend_from_slice(&[Slot::new(SlotID(1))]).unwrap();
+    outline.extend_from_slice(&[Slot::new(1)]).unwrap();
 
     let ei1 = event1
         .assign(
-            Slot::new(SlotID(1)),
+            Slot::new(1),
             vec![Resource::new(
                 ResourceID(1),
                 ResourceTypeID(1),
@@ -26,7 +26,7 @@ pub fn new_instantiates_with_no_conflicts() {
 
     let ei2 = event2
         .assign(
-            Slot::new(SlotID(1)),
+            Slot::new(1),
             vec![Resource::new(ResourceID(2), ResourceTypeID(1), outline)],
         )
         .unwrap();
@@ -40,11 +40,11 @@ pub fn new_fails_with_conflicts() {
     let event2 = EventBuilder::new(EventID(2)).build();
 
     let mut outline = Outline::new();
-    outline.extend_from_slice(&[Slot::new(SlotID(1))]).unwrap();
+    outline.extend_from_slice(&[Slot::new(1)]).unwrap();
 
     let ei1 = event1
         .assign(
-            Slot::new(SlotID(1)),
+            Slot::new(1),
             vec![Resource::new(
                 ResourceID(1),
                 ResourceTypeID(1),
@@ -55,7 +55,7 @@ pub fn new_fails_with_conflicts() {
 
     let ei2 = event2
         .assign(
-            Slot::new(SlotID(1)),
+            Slot::new(1),
             vec![Resource::new(ResourceID(1), ResourceTypeID(1), outline)],
         )
         .unwrap();

@@ -2,7 +2,7 @@ use crate::{
     model::{
         events::{EventBuilder, EventInstance, Schedule},
         resources::Resource,
-        slots::{Outline, Slot},
+        slots::Outline,
         EventID, ProblemDomain, ResourceID, ResourceTypeID, SlotID,
     },
     utils::is_subset,
@@ -34,7 +34,7 @@ impl Chromosome for SimpleChromosome {
             .collect();
 
         SimpleChromosome {
-            slot_allocations: slot_allocs.iter().map(|x| x.assigned_slot.id).collect(),
+            slot_allocations: slot_allocs.iter().map(|x| x.assigned_slot).collect(),
             resource_allocations: resource_allocs,
         }
     }
@@ -63,7 +63,7 @@ impl Chromosome for SimpleChromosome {
             if let Some(constraints) = &domain.events[event_id].time_constraints {
                 if !constraints
                     .slots
-                    .contains(&Slot::new(self.get_slot(EventID(event_id))))
+                    .contains(&self.get_slot(EventID(event_id)))
                 {
                     events_in_bounds = false;
                 }
@@ -86,7 +86,7 @@ impl Chromosome for SimpleChromosome {
                     if !&domain.resources[*result]
                         .availability
                         .slots
-                        .contains(&Slot::new(self.slot_allocations[event_id]))
+                        .contains(&self.slot_allocations[event_id])
                     {
                         resources_in_bounds = false;
                     }
@@ -102,7 +102,7 @@ impl Chromosome for SimpleChromosome {
 
         for (i, e) in self.slot_allocations.iter().enumerate() {
             let instance = EventBuilder::new(EventID(i)).build().assign(
-                Slot::new(*e),
+                *e,
                 self.resource_allocations[i]
                     .iter()
                     .map(|(r, t)| Resource::new(*r, *t, Outline::new()))
