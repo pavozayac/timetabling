@@ -18,10 +18,7 @@ pub fn assign_errors_with_incorrect_resource_constraints() {
         )])
         .build();
 
-    let res = event.assign(
-        Slot::new(1),
-        vec![Resource::new(ResourceID(2), ResourceTypeID(1), outline)],
-    );
+    let res = event.assign(Slot::new(1), vec![(ResourceID(2), ResourceTypeID(1))]);
 
     assert_eq!(res, Err(()));
 }
@@ -39,21 +36,16 @@ pub fn assign_succeeds_with_correct_resource_constraints() {
         )])
         .build();
 
-    let res = event.clone().assign(
-        Slot::new(1),
-        vec![Resource::new(
-            ResourceID(1),
-            ResourceTypeID(1),
-            outline.clone(),
-        )],
-    );
+    let res = event
+        .clone()
+        .assign(Slot::new(1), vec![(ResourceID(1), ResourceTypeID(1))]);
 
     assert_eq!(
         res,
         Ok(EventInstance {
-            event: event,
-            assigned_slot: Slot::new(1),
-            assigned_resources: vec![Resource::new(ResourceID(1), ResourceTypeID(1), outline)],
+            event_id: event.id,
+            slot_id: Slot::new(1),
+            resources: vec![(ResourceID(1), ResourceTypeID(1))],
         })
     );
 }
@@ -65,21 +57,16 @@ pub fn assign_succeeds_with_no_resource_constraints() {
 
     let event = EventBuilder::new(EventID(1)).build();
 
-    let res = event.clone().assign(
-        Slot::new(1),
-        vec![Resource::new(
-            ResourceID(1),
-            ResourceTypeID(1),
-            outline.clone(),
-        )],
-    );
+    let res = event
+        .clone()
+        .assign(Slot::new(1), vec![(ResourceID(1), ResourceTypeID(1))]);
 
     assert_eq!(
         res,
         Ok(EventInstance {
-            event: event,
-            assigned_slot: Slot::new(1),
-            assigned_resources: vec![Resource::new(ResourceID(1), ResourceTypeID(1), outline)],
+            event_id: event.id,
+            slot_id: Slot::new(1),
+            resources: vec![(ResourceID(1), ResourceTypeID(1))],
         })
     );
 }
@@ -140,14 +127,9 @@ pub fn assign_succeeds_with_resource_requirements_fulfilled() {
         .resource_requirements(vec![ResourceRequirement::new(ResourceTypeID(1), 1)])
         .build();
 
-    let res = event.clone().assign(
-        Slot::new(1),
-        vec![Resource::new(
-            ResourceID(1),
-            ResourceTypeID(1),
-            Outline::new(),
-        )],
-    );
+    let res = event
+        .clone()
+        .assign(Slot::new(1), vec![(ResourceID(1), ResourceTypeID(1))]);
 
     assert!(matches!(res, Ok(_)));
 }
@@ -158,14 +140,9 @@ pub fn assign_errors_with_resource_requirements_not_fulfilled() {
         .resource_requirements(vec![ResourceRequirement::new(ResourceTypeID(1), 1)])
         .build();
 
-    let res = event.clone().assign(
-        Slot::new(1),
-        vec![Resource::new(
-            ResourceID(1),
-            ResourceTypeID(2),
-            Outline::new(),
-        )],
-    );
+    let res = event
+        .clone()
+        .assign(Slot::new(1), vec![(ResourceID(1), ResourceTypeID(2))]);
 
     assert!(matches!(res, Err(_)));
 }

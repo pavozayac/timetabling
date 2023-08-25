@@ -2,6 +2,14 @@ use std::hash::Hash;
 
 use super::{slots::Outline, ResourceID, ResourceTypeID};
 
+pub type ResourceIDPair = (ResourceID, ResourceTypeID);
+
+impl From<Resource> for ResourceIDPair {
+    fn from(value: Resource) -> Self {
+        (value.id, value.type_id)
+    }
+}
+
 #[derive(Clone, Debug)]
 pub struct Resource {
     pub id: ResourceID,

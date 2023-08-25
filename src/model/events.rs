@@ -3,9 +3,9 @@ use std::{collections::HashMap, ops::Deref};
 use crate::utils::{self, has_unique_items};
 
 use super::{
-    resources::Resource,
+    resources::{Resource, ResourceIDPair},
     slots::{Outline, Slot},
-    EventID, ResourceTypeID,
+    EventID, ResourceID, ResourceTypeID, SlotID,
 };
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -40,7 +40,7 @@ impl Event {
     pub fn assign(
         self,
         assigned_slot: Slot,
-        assigned_resources: Vec<Resource>,
+        assigned_resources: Vec<ResourceIDPair>,
     ) -> Result<EventInstance, ()> {
         if let Some(fixed_slot) = self.fixed_slot {
             if fixed_slot != assigned_slot {
@@ -57,7 +57,7 @@ impl Event {
         if let Some(requirements) = self.resource_requirements.as_ref() {
             for rr in requirements {
                 if assigned_resources.iter().fold(0, |acc, x| {
-                    if x.type_id == rr.resource_type_id {
+                    if x.1 == rr.resource_type_id {
                         acc + 1
                     } else {
                         acc
@@ -70,15 +70,17 @@ impl Event {
         }
 
         if utils::is_subset(
-            self.resource_constraints
-                .as_ref()
-                .unwrap_or(&assigned_resources),
-            &assigned_resources,
+            if let Some(constr) = self.resource_constraints {
+                constr.iter().map(|r| (r.id, r.type_id)).collect()
+            } else {
+                assigned_resources
+            },
+            assigned_resources,
         ) {
             Ok(EventInstance {
-                event: self,
-                assigned_slot: assigned_slot,
-                assigned_resources: assigned_resources,
+                event_id: self.id,
+                slot_id: assigned_slot,
+                resources: assigned_resources,
             })
         } else {
             return Err(());
@@ -138,9 +140,19 @@ impl EventBuilder {
 
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub struct EventInstance {
-    pub event: Event,
-    pub assigned_slot: Slot,
-    pub assigned_resources: Vec<Resource>,
+    pub event_id: EventID,
+    pub slot_id: SlotID,
+    pub resources: Vec<ResourceIDPair>,
+}
+
+impl EventInstance {
+    fn new(event_id: EventID, slot_id: SlotID, resources: Vec<ResourceIDPair>) -> Self {
+        EventInstance {
+            event_id,
+            slot_id,
+            resources,
+        }
+    }
 }
 
 pub struct Schedule {
@@ -149,18 +161,18 @@ pub struct Schedule {
 
 impl Schedule {
     pub fn new(event_instances: Vec<EventInstance>) -> Result<Schedule, ()> {
-        let mut map: HashMap<Slot, Vec<Resource>> = HashMap::new();
+        let mut map: HashMap<Slot, Vec<ResourceIDPair>> = HashMap::new();
 
         // This check ensures that no two EventInstances use the same resources in the same slot
         for ei in event_instances.iter() {
-            let key: &Slot = &ei.deref().assigned_slot;
+            let key: &Slot = &ei.deref().slot_id;
 
             if let Some(value) = map.get_mut(key) {
-                value.extend_from_slice(ei.assigned_resources.as_slice());
+                value.extend_from_slice(ei.resources.as_slice());
             } else {
-                let mut initial: Vec<Resource> = Vec::new();
+                let mut initial: Vec<ResourceIDPair> = Vec::new();
 
-                initial.extend_from_slice(ei.assigned_resources.as_slice());
+                initial.extend_from_slice(ei.resources.as_slice());
 
                 map.insert(*key, initial);
             }
