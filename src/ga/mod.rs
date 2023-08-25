@@ -1,11 +1,12 @@
-pub mod simple_chromosome;
+pub mod chromosomes;
+pub mod crossovers;
 
 use rand::{thread_rng, Rng};
 
 use crate::{
     model::{
         events::{EventInstance, Schedule},
-        resources::Resource,
+        resources::{Resource, ResourceIDPair},
         slots::{Outline, Slot},
         EventID, ProblemDomain, ResourceID, ResourceTypeID, SlotID,
     },
@@ -95,7 +96,7 @@ pub trait Chromosome: Sized {
 
         for e in domain.events.iter() {
             let slot: Slot = domain.outline.slots[rng.gen_range(0..domain.outline.slots.len())];
-            let mut allocated_resources: Vec<Resource> = vec![];
+            let mut allocated_resources: Vec<ResourceIDPair> = vec![];
 
             for _ in 0..e
                 .resource_requirements
@@ -105,13 +106,13 @@ pub trait Chromosome: Sized {
                 .fold(0, |acc, x| acc + x.amount)
             {
                 allocated_resources
-                    .push(domain.resources[rng.gen_range(0..domain.resources.len())].clone());
+                    .push(domain.resources[rng.gen_range(0..domain.resources.len())].into());
             }
 
             event_instances.push(EventInstance {
-                event: e.clone(),
-                assigned_slot: slot,
-                assigned_resources: allocated_resources,
+                event_id: e.id,
+                slot_id: slot,
+                resources: allocated_resources,
             });
         }
 
@@ -128,9 +129,9 @@ pub trait Mutation {
 }
 
 pub trait Crossover {
-    fn crossover<T: Chromosome>(&mut self, lhs: T, rhs: T) -> T;
+    fn crossover<T: Chromosome>(&mut self, lhs: T, rhs: T) -> (T, T);
 }
 
 pub trait Selection {
-    fn apply_selection<T: Chromosome>(&mut self, pool: &mut Vec<T>);
+    fn selection<T: Chromosome>(&mut self, pool: &[T]) -> Vec<T>;
 }
