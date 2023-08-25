@@ -105,8 +105,11 @@ pub trait Chromosome: Sized {
                 .iter()
                 .fold(0, |acc, x| acc + x.amount)
             {
-                allocated_resources
-                    .push(domain.resources[rng.gen_range(0..domain.resources.len())].into());
+                allocated_resources.push(
+                    domain.resources[rng.gen_range(0..domain.resources.len())]
+                        .clone()
+                        .into(),
+                );
             }
 
             event_instances.push(EventInstance {

@@ -21,7 +21,10 @@ impl Chromosome for SimpleChromosome {
 
         slot_allocs.sort_unstable_by(|a, b| a.event_id.cmp(&b.event_id));
 
-        let resource_allocs = event_instances.iter().map(|x| x.resources).collect();
+        let resource_allocs = event_instances
+            .iter()
+            .map(|x| x.resources.clone())
+            .collect();
 
         SimpleChromosome {
             slot_allocations: slot_allocs.iter().map(|x| x.slot_id).collect(),
@@ -55,7 +58,7 @@ impl Chromosome for SimpleChromosome {
         for (i, e) in self.slot_allocations.iter().enumerate() {
             let instance = EventBuilder::new(EventID(i))
                 .build()
-                .assign(*e, self.resource_allocations[i])?;
+                .assign(*e, self.resource_allocations[i].clone())?;
 
             event_instances.push(instance);
         }

@@ -69,13 +69,16 @@ impl Event {
             }
         }
 
+        let mut temp: Vec<ResourceIDPair> = Vec::new();
+
         if utils::is_subset(
             if let Some(constr) = self.resource_constraints {
-                constr.iter().map(|r| (r.id, r.type_id)).collect()
+                constr.iter().for_each(|r| temp.push((r.id, r.type_id)));
+                temp.iter()
             } else {
-                assigned_resources
+                assigned_resources.iter()
             },
-            assigned_resources,
+            assigned_resources.iter(),
         ) {
             Ok(EventInstance {
                 event_id: self.id,
