@@ -29,11 +29,7 @@ impl Resource {
 
 impl PartialEq for Resource {
     fn eq(&self, other: &Self) -> bool {
-        return self.id == other.id && self.type_id == other.type_id;
-    }
-
-    fn ne(&self, other: &Self) -> bool {
-        return self.id != other.id || self.type_id != other.type_id;
+        self.id == other.id && self.type_id == other.type_id
     }
 }
 

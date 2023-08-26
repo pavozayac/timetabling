@@ -149,7 +149,7 @@ pub struct EventInstance {
 }
 
 impl EventInstance {
-    fn new(event_id: EventID, slot_id: SlotID, resources: Vec<ResourceIDPair>) -> Self {
+    pub fn new(event_id: EventID, slot_id: SlotID, resources: Vec<ResourceIDPair>) -> Self {
         EventInstance {
             event_id,
             slot_id,

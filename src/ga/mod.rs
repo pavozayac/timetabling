@@ -14,7 +14,7 @@ use crate::{
 };
 
 pub trait Chromosome: Sized {
-    fn new(event_instances: &[EventInstance]) -> Self;
+    fn new<T: IntoIterator<Item = EventInstance>>(event_instances: T) -> Self;
     fn events_count(&self) -> usize;
     fn get_slot(&self, event: EventID) -> SlotID;
     fn set_slot(&mut self, event: EventID, slot: SlotID);
@@ -119,7 +119,7 @@ pub trait Chromosome: Sized {
             });
         }
 
-        Self::new(&event_instances)
+        Self::new(event_instances)
     }
 }
 

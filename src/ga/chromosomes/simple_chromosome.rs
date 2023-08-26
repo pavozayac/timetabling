@@ -1,7 +1,5 @@
 use crate::model::{
     events::{EventBuilder, EventInstance, Schedule},
-    resources::Resource,
-    slots::Outline,
     EventID, ResourceID, ResourceTypeID, SlotID,
 };
 
@@ -16,15 +14,12 @@ pub struct SimpleChromosome {
 }
 
 impl Chromosome for SimpleChromosome {
-    fn new(event_instances: &[EventInstance]) -> Self {
-        let mut slot_allocs = event_instances.to_vec();
+    fn new<T: IntoIterator<Item = EventInstance>>(event_instances: T) -> Self {
+        let mut slot_allocs: Vec<EventInstance> = event_instances.into_iter().collect();
 
         slot_allocs.sort_unstable_by(|a, b| a.event_id.cmp(&b.event_id));
 
-        let resource_allocs = event_instances
-            .iter()
-            .map(|x| x.resources.clone())
-            .collect();
+        let resource_allocs = slot_allocs.iter().map(|x| x.resources.clone()).collect();
 
         SimpleChromosome {
             slot_allocations: slot_allocs.iter().map(|x| x.slot_id).collect(),

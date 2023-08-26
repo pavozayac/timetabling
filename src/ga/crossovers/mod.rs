@@ -1,6 +1,6 @@
 use rand::{rngs::ThreadRng, Rng};
 
-use crate::model::events::EventInstance;
+use crate::model::{events::EventInstance, EventID};
 
 use super::Crossover;
 
@@ -30,15 +30,54 @@ impl<R: Rng> Crossover for OnePointCrossover<R> {
 
         let cross_point: usize = self.rng.gen_range(0..lcount);
 
-        let low_left: Vec<EventInstance> = Vec::new();
-        let high_left: Vec<EventInstance> = Vec::new();
-        let low_right: Vec<EventInstance> = Vec::new();
-        let high_right: Vec<EventInstance> = Vec::new();
+        let mut low_left: Vec<EventInstance> = Vec::new();
+        let mut high_left: Vec<EventInstance> = Vec::new();
+        let mut low_right: Vec<EventInstance> = Vec::new();
+        let mut high_right: Vec<EventInstance> = Vec::new();
 
-        // for i in 0..cross_point {
-        //     low_left.push(lhs.get_slot(i).)
-        // }
+        for i in 0..lcount {
+            if i < cross_point {
+                low_left.push(EventInstance::new(
+                    EventID(i),
+                    lhs.get_slot(EventID(i)),
+                    lhs.get_resources(EventID(i))
+                        .iter()
+                        .map(|r| (*r).into())
+                        .collect(),
+                ));
 
-        todo!()
+                low_right.push(EventInstance::new(
+                    EventID(i),
+                    rhs.get_slot(EventID(i)),
+                    rhs.get_resources(EventID(i))
+                        .iter()
+                        .map(|r| (*r).into())
+                        .collect(),
+                ));
+            } else {
+                high_left.push(EventInstance::new(
+                    EventID(i),
+                    lhs.get_slot(EventID(i)),
+                    lhs.get_resources(EventID(i))
+                        .iter()
+                        .map(|r| (*r).into())
+                        .collect(),
+                ));
+
+                high_right.push(EventInstance::new(
+                    EventID(i),
+                    rhs.get_slot(EventID(i)),
+                    rhs.get_resources(EventID(i))
+                        .iter()
+                        .map(|r| (*r).into())
+                        .collect(),
+                ));
+            }
+        }
+
+        let child1: T = T::new(low_left.into_iter().chain(high_right.into_iter()));
+        let child2: T = T::new(low_right.into_iter().chain(high_left.into_iter()));
+
+        (child1, child2)
     }
 }

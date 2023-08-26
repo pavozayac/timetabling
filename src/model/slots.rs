@@ -10,14 +10,14 @@ impl Slot {
     }
 }
 
-#[derive(Clone, PartialEq, Eq, Debug)]
+#[derive(Clone, PartialEq, Eq, Debug, Default)]
 pub struct Outline {
     pub slots: Vec<Slot>,
 }
 
 impl Outline {
     pub fn new() -> Self {
-        Outline { slots: vec![] }
+        Self::default()
     }
 
     pub fn add_slot(&mut self, slot: Slot) -> Result<(), ()> {
