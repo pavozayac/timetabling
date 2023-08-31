@@ -55,9 +55,17 @@ impl<'a, R: Rng> Mutation for RandomSubstitutionMutation<'a, R> {
                 .unwrap()
                 .into();
 
-            let resources: &mut [ResourceIDPair] = chromosome.get_resources_mut(EventID(
+            let resources: &mut Vec<ResourceIDPair> = chromosome.get_resources_mut(EventID(
                 self.rng.gen_range(0..self.problem_domain.events.len()),
             ));
+
+            let extend: bool = self.rng.gen_bool(0.5);
+
+            if extend {
+                resources.push(resource_substitute);
+            } else {
+                *resources.choose_mut(&mut self.rng).unwrap() = resource_substitute;
+            }
 
             counter -= 1.0;
         }
