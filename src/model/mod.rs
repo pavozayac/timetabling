@@ -39,16 +39,16 @@ impl From<ResourceTypeID> for usize {
 
 pub struct ProblemDomain {
     pub events: Vec<Event>,
-    pub outline: Outline,
     pub resources: Vec<Resource>,
+    pub max_slots: usize,
 }
 
 impl ProblemDomain {
-    fn new(events: Vec<Event>, outline: Outline, resources: Vec<Resource>) -> Self {
+    fn new(events: Vec<Event>, slots_count: usize, resources: Vec<Resource>) -> Self {
         ProblemDomain {
             events,
-            outline,
             resources,
+            max_slots: slots_count,
         }
     }
 }

@@ -10,6 +10,12 @@ impl From<Resource> for ResourceIDPair {
     }
 }
 
+impl From<&Resource> for ResourceIDPair {
+    fn from(value: &Resource) -> Self {
+        (value.id, value.type_id)
+    }
+}
+
 #[derive(Clone, Debug)]
 pub struct Resource {
     pub id: ResourceID,

@@ -1,5 +1,7 @@
 pub mod chromosomes;
 pub mod crossovers;
+pub mod mutations;
+pub mod selections;
 
 use rand::{thread_rng, Rng};
 
@@ -95,7 +97,8 @@ pub trait Chromosome: Sized {
         let mut rng = thread_rng();
 
         for e in domain.events.iter() {
-            let slot: Slot = domain.outline.slots[rng.gen_range(0..domain.outline.slots.len())];
+            let slot: Slot = SlotID(rng.gen_range(0..domain.max_slots));
+
             let mut allocated_resources: Vec<ResourceIDPair> = vec![];
 
             for _ in 0..e
