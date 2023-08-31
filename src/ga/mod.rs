@@ -15,7 +15,7 @@ use crate::{
     utils::is_subset,
 };
 
-pub trait Chromosome: Sized {
+pub trait Chromosome: Clone + Sized {
     fn new<T: IntoIterator<Item = EventInstance>>(event_instances: T) -> Self;
     fn events_count(&self) -> usize;
     fn get_slot(&self, event: EventID) -> SlotID;
@@ -126,8 +126,10 @@ pub trait Chromosome: Sized {
     }
 }
 
-pub trait FitnessEvaluator<T: Chromosome> {
-    fn calculate_fitness(&self, chromosome: T, domain: &ProblemDomain) -> f64;
+pub trait FitnessEvaluator {
+    type Chromosome: Chromosome;
+
+    fn calculate_fitness(&self, chromosome: &Self::Chromosome, domain: &ProblemDomain) -> f64;
 }
 
 pub trait Mutation {
@@ -139,5 +141,9 @@ pub trait Crossover {
 }
 
 pub trait Selection {
-    fn selection<T: Chromosome>(&mut self, pool: &[T]) -> Vec<T>;
+    fn selection<T: Chromosome, E: FitnessEvaluator<Chromosome = T>>(
+        &mut self,
+        evaluator: E,
+        pool: &[T],
+    ) -> Vec<T>;
 }
