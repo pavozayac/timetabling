@@ -1,4 +1,4 @@
-use self::{events::Event, resources::Resource, slots::Outline};
+use self::{events::Event, resources::Resource};
 
 pub mod events;
 pub mod resources;

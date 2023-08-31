@@ -4,14 +4,14 @@ use crate::utils::has_unique_items;
 pub fn returns_true_given_unique_items() {
     let slice = &[1, 2, 3, 4, 5, 6];
 
-    assert_eq!(true, has_unique_items(slice));
+    assert!(has_unique_items(slice));
 }
 
 #[test]
 pub fn returns_false_given_non_unique_items() {
     let slice = &[1, 2, 3, 4, 1, 6];
 
-    assert_eq!(false, has_unique_items(slice));
+    assert!(!has_unique_items(slice));
 }
 
 #[derive(PartialEq, Eq, Hash)]
@@ -37,7 +37,7 @@ pub fn returns_true_given_unique_structs() {
         },
     ];
 
-    assert_eq!(true, has_unique_items(slice));
+    assert!(has_unique_items(slice));
 }
 
 #[test]
@@ -57,5 +57,5 @@ pub fn returns_false_given_unique_structs() {
         },
     ];
 
-    assert_eq!(false, has_unique_items(slice));
+    assert!(!has_unique_items(slice));
 }

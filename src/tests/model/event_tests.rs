@@ -77,7 +77,7 @@ pub fn assign_succeeds_with_correct_fixed_slot() {
         .fixed_slot(Slot::new(1))
         .build();
 
-    let res = event.clone().assign(Slot::new(1), vec![]);
+    let res = event.assign(Slot::new(1), vec![]);
 
     assert!(matches!(res, Ok(_)));
 }
@@ -88,7 +88,7 @@ pub fn assign_errors_with_wrong_fixed_slot() {
         .fixed_slot(Slot::new(2))
         .build();
 
-    let res = event.clone().assign(Slot::new(1), vec![]);
+    let res = event.assign(Slot::new(1), vec![]);
 
     assert!(matches!(res, Err(_)));
 }
@@ -102,7 +102,7 @@ pub fn assign_succeeds_within_time_constraints() {
         .time_constraints(outline)
         .build();
 
-    let res = event.clone().assign(Slot::new(1), vec![]);
+    let res = event.assign(Slot::new(1), vec![]);
 
     assert!(matches!(res, Ok(_)));
 }
@@ -116,7 +116,7 @@ pub fn assign_errors_outside_time_constraints() {
         .time_constraints(outline)
         .build();
 
-    let res = event.clone().assign(Slot::new(1), vec![]);
+    let res = event.assign(Slot::new(1), vec![]);
 
     assert!(matches!(res, Err(_)));
 }
@@ -128,7 +128,7 @@ pub fn assign_succeeds_with_resource_requirements_fulfilled() {
         .build();
 
     let res = event
-        .clone()
+        
         .assign(Slot::new(1), vec![(ResourceID(1), ResourceTypeID(1))]);
 
     assert!(matches!(res, Ok(_)));
@@ -141,7 +141,7 @@ pub fn assign_errors_with_resource_requirements_not_fulfilled() {
         .build();
 
     let res = event
-        .clone()
+        
         .assign(Slot::new(1), vec![(ResourceID(1), ResourceTypeID(2))]);
 
     assert!(matches!(res, Err(_)));

@@ -40,37 +40,25 @@ impl<R: Rng> Crossover for OnePointCrossover<R> {
                 low_left.push(EventInstance::new(
                     EventID(i),
                     lhs.get_slot(EventID(i)),
-                    lhs.get_resources(EventID(i))
-                        .iter()
-                        .map(|r| (*r).into())
-                        .collect(),
+                    lhs.get_resources(EventID(i)).to_vec(),
                 ));
 
                 low_right.push(EventInstance::new(
                     EventID(i),
                     rhs.get_slot(EventID(i)),
-                    rhs.get_resources(EventID(i))
-                        .iter()
-                        .map(|r| (*r).into())
-                        .collect(),
+                    rhs.get_resources(EventID(i)).to_vec(),
                 ));
             } else {
                 high_left.push(EventInstance::new(
                     EventID(i),
                     lhs.get_slot(EventID(i)),
-                    lhs.get_resources(EventID(i))
-                        .iter()
-                        .map(|r| (*r).into())
-                        .collect(),
+                    lhs.get_resources(EventID(i)).to_vec(),
                 ));
 
                 high_right.push(EventInstance::new(
                     EventID(i),
                     rhs.get_slot(EventID(i)),
-                    rhs.get_resources(EventID(i))
-                        .iter()
-                        .map(|r| (*r).into())
-                        .collect(),
+                    rhs.get_resources(EventID(i)).to_vec(),
                 ));
             }
         }

@@ -1,9 +1,9 @@
-use std::os::unix::fs::chroot;
+
 
 use rand::{rngs::ThreadRng, seq::SliceRandom, thread_rng, Rng};
 
 use crate::model::{
-    events::Event, resources::ResourceIDPair, slots::Slot, EventID, ProblemDomain, SlotID,
+    resources::ResourceIDPair, slots::Slot, EventID, ProblemDomain, SlotID,
 };
 
 use super::Mutation;

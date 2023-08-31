@@ -5,7 +5,7 @@ use crate::utils::{self, has_unique_items};
 use super::{
     resources::{Resource, ResourceIDPair},
     slots::{Outline, Slot},
-    EventID, ResourceID, ResourceTypeID, SlotID,
+    EventID, ResourceTypeID, SlotID,
 };
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -86,7 +86,7 @@ impl Event {
                 resources: assigned_resources,
             })
         } else {
-            return Err(());
+            Err(())
         }
     }
 }
@@ -102,7 +102,7 @@ pub struct EventBuilder {
 impl EventBuilder {
     pub fn new(id: EventID) -> EventBuilder {
         EventBuilder {
-            id: id,
+            id,
             fixed_slot: None,
             resource_constraints: None,
             time_constraints: None,
