@@ -1,5 +1,6 @@
 use crate::model::{
     events::{EventBuilder, EventInstance, Schedule},
+    resources::ResourceIDPair,
     EventID, ResourceID, ResourceTypeID, SlotID,
 };
 
@@ -39,11 +40,11 @@ impl Chromosome for SimpleChromosome {
         self.slot_allocations[usize::from(event)] = slot;
     }
 
-    fn get_resources(&self, event: EventID) -> &[(ResourceID, ResourceTypeID)] {
+    fn get_resources(&self, event: EventID) -> &[ResourceIDPair] {
         &self.resource_allocations[usize::from(event)]
     }
 
-    fn get_resources_mut(&mut self, event: EventID) -> &mut [(ResourceID, ResourceTypeID)] {
+    fn get_resources_mut(&mut self, event: EventID) -> &mut Vec<ResourceIDPair> {
         &mut self.resource_allocations[usize::from(event)]
     }
 

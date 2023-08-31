@@ -10,7 +10,7 @@ use crate::{
         events::{EventInstance, Schedule},
         resources::{Resource, ResourceIDPair},
         slots::{Outline, Slot},
-        EventID, ProblemDomain, ResourceID, ResourceTypeID, SlotID,
+        EventID, ProblemDomain, SlotID,
     },
     utils::is_subset,
 };
@@ -20,8 +20,8 @@ pub trait Chromosome: Sized {
     fn events_count(&self) -> usize;
     fn get_slot(&self, event: EventID) -> SlotID;
     fn set_slot(&mut self, event: EventID, slot: SlotID);
-    fn get_resources(&self, event: EventID) -> &[(ResourceID, ResourceTypeID)];
-    fn get_resources_mut(&mut self, event: EventID) -> &mut [(ResourceID, ResourceTypeID)];
+    fn get_resources(&self, event: EventID) -> &[ResourceIDPair];
+    fn get_resources_mut(&mut self, event: EventID) -> &mut Vec<ResourceIDPair>;
     fn schedule(&self) -> Result<Schedule, ()>;
 
     fn is_correct(&self, domain: &ProblemDomain) -> bool {
