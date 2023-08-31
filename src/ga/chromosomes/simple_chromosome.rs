@@ -4,7 +4,7 @@ use crate::model::{
     EventID, ResourceID, ResourceTypeID, SlotID,
 };
 
-use crate::ga::Chromosome;
+use crate::ga::chromosomes::Chromosome;
 
 // Implementation assumes events, slots and resources are given as a contiguous group
 // starting with id 0
