@@ -25,31 +25,26 @@ pub trait Chromosome: Clone + Sized {
         let mut resources_in_bounds = true;
 
         for event_id in 0..domain.events.len() {
-            if let Some(constraints) = &domain.events[event_id].time_constraints {
-                if !constraints
+            if !domain.events[event_id].time_constraints.slots.is_empty()
+                && !domain.events[event_id]
+                    .time_constraints
                     .slots
                     .contains(&self.get_slot(EventID(event_id)))
-                {
-                    events_in_bounds = false;
-                }
+            {
+                events_in_bounds = false;
             }
 
-            if let Some(fixed_slot) = &domain.events[event_id].fixed_slot {
-                if self.get_slot(EventID(event_id)) != *fixed_slot {
-                    events_in_bounds = false;
-                }
-            }
-
-            if let Some(requirements) = &domain.events[event_id].resource_constraints {
-                if !is_subset(
-                    requirements.iter().map(|x| (x.id, x.type_id)),
-                    self.get_resources(EventID(event_id))
-                        .iter()
-                        .map(|x| (x.0, x.1)),
-                ) {
-                    resources_in_bounds = false;
-                }
-            }
+            // if !is_subset(
+            //     domain.events[event_id]
+            //         .resource_constraints
+            //         .iter()
+            //         .map(|x| (x.0, x.1)),
+            //     self.get_resources(EventID(event_id))
+            //         .iter()
+            //         .map(|x| (x.0, x.1)),
+            // ) {
+            //     resources_in_bounds = false;
+            // }
 
             for (r_id, r_type_id) in self.get_resources(EventID(event_id)).iter() {
                 let r = Resource::new(*r_id, *r_type_id, Outline::new());
@@ -64,22 +59,20 @@ pub trait Chromosome: Clone + Sized {
                 }
             }
 
-            for reqs in &domain.events[event_id].resource_requirements {
-                for req in reqs {
-                    if self
-                        .get_resources(EventID(event_id))
-                        .iter()
-                        .fold(0, |acc, x| {
-                            if x.1 == req.resource_type_id {
-                                acc + 1
-                            } else {
-                                acc
-                            }
-                        })
-                        < req.amount
-                    {
-                        resources_in_bounds = false;
-                    }
+            for req in &domain.events[event_id].resource_requirements {
+                if self
+                    .get_resources(EventID(event_id))
+                    .iter()
+                    .fold(0, |acc, x| {
+                        if x.1 == req.resource_type_id {
+                            acc + 1
+                        } else {
+                            acc
+                        }
+                    })
+                    < req.amount
+                {
+                    resources_in_bounds = false;
                 }
             }
         }
@@ -99,8 +92,6 @@ pub trait Chromosome: Clone + Sized {
 
             for _ in 0..e
                 .resource_requirements
-                .as_ref()
-                .unwrap_or(&vec![])
                 .iter()
                 .fold(0, |acc, x| acc + x.amount)
             {

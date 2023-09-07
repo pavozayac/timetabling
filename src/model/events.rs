@@ -26,14 +26,10 @@ impl ResourceRequirement {
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub struct Event {
     pub id: EventID,
-    // This is Some(slot) if the event is always supposed to be in one particular slot.
-    pub fixed_slot: Option<Slot>,
-    // This is Some if there are any constraints on resources, None if they can be
-    // assigned freely.
-    pub resource_constraints: Option<Vec<Resource>>,
+    // pub resource_constraints: Vec<ResourceIDPair>,
     // Some if constrained to only some slots (which should be a subset of the global outline).
-    pub time_constraints: Option<Outline>,
-    pub resource_requirements: Option<Vec<ResourceRequirement>>,
+    pub time_constraints: Outline,
+    pub resource_requirements: Vec<ResourceRequirement>,
 }
 
 impl Event {
@@ -42,99 +38,89 @@ impl Event {
         assigned_slot: Slot,
         assigned_resources: Vec<ResourceIDPair>,
     ) -> Result<EventInstance, ()> {
-        if let Some(fixed_slot) = self.fixed_slot {
-            if fixed_slot != assigned_slot {
-                return Err(());
-            }
+        // if let Some(fixed_slot) = self.fixed_slot {
+        //     if fixed_slot != assigned_slot {
+        //         return Err(());
+        //     }
+        // }
+
+        if !self.time_constraints.slots.contains(&assigned_slot) {
+            return Err(());
         }
 
-        if let Some(constraints) = self.time_constraints.as_ref() {
-            if !constraints.slots.contains(&assigned_slot) {
-                return Err(());
-            }
-        }
-
-        if let Some(requirements) = self.resource_requirements.as_ref() {
-            for rr in requirements {
-                if assigned_resources.iter().fold(0, |acc, x| {
-                    if x.1 == rr.resource_type_id {
-                        acc + 1
-                    } else {
-                        acc
-                    }
-                }) < rr.amount
-                {
-                    return Err(());
+        for rr in self.resource_requirements {
+            if assigned_resources.iter().fold(0, |acc, x| {
+                if x.1 == rr.resource_type_id {
+                    acc + 1
+                } else {
+                    acc
                 }
+            }) < rr.amount
+            {
+                return Err(());
             }
         }
 
-        let mut temp: Vec<ResourceIDPair> = Vec::new();
+        // let mut temp: Vec<ResourceIDPair> = Vec::new();
 
-        if utils::is_subset(
-            if let Some(constr) = self.resource_constraints {
-                constr.iter().for_each(|r| temp.push((r.id, r.type_id)));
-                temp.iter()
-            } else {
-                assigned_resources.iter()
-            },
-            assigned_resources.iter(),
-        ) {
-            Ok(EventInstance {
-                event_id: self.id,
-                slot_id: assigned_slot,
-                resources: assigned_resources,
-            })
-        } else {
-            Err(())
-        }
+        // if utils::is_subset(
+        //     if !self.resource_constraints.is_empty() {
+        //         self.resource_constraints
+        //             .iter()
+        //             .for_each(|r| temp.push((r.0, r.1)));
+        //         temp.iter()
+        //     } else {
+        //         assigned_resources.iter()
+        //     },
+        //     assigned_resources.iter(),
+        // ) {
+        Ok(EventInstance {
+            event_id: self.id,
+            slot_id: assigned_slot,
+            resources: assigned_resources,
+        })
+        // } else {
+        //     Err(())
+        // }
     }
 }
 
 pub struct EventBuilder {
     id: EventID,
-    fixed_slot: Option<Slot>,
-    resource_constraints: Option<Vec<Resource>>,
-    time_constraints: Option<Outline>,
-    resource_requirements: Option<Vec<ResourceRequirement>>,
+    resource_constraints: Vec<ResourceIDPair>,
+    time_constraints: Outline,
+    resource_requirements: Vec<ResourceRequirement>,
 }
 
 impl EventBuilder {
     pub fn new(id: EventID) -> EventBuilder {
         EventBuilder {
             id,
-            fixed_slot: None,
-            resource_constraints: None,
-            time_constraints: None,
-            resource_requirements: None,
+            resource_constraints: Vec::new(),
+            time_constraints: Outline::new(),
+            resource_requirements: Vec::new(),
         }
     }
 
-    pub fn fixed_slot(mut self, slot: Slot) -> Self {
-        self.fixed_slot = Some(slot);
-        self
-    }
-
-    pub fn resource_constraints(mut self, constraints: Vec<Resource>) -> Self {
-        self.resource_constraints = Some(constraints);
-        self
-    }
+    // pub fn resource_constraints(mut self, constraints: Vec<ResourceIDPair>) -> Self {
+    //     self.resource_constraints = constraints;
+    //     self
+    // }
 
     pub fn time_constraints(mut self, constraints: Outline) -> Self {
-        self.time_constraints = Some(constraints);
+        self.time_constraints = constraints;
         self
     }
 
     pub fn resource_requirements(mut self, requirements: Vec<ResourceRequirement>) -> Self {
-        self.resource_requirements = Some(requirements);
+        self.resource_requirements = requirements;
         self
     }
 
     pub fn build(self) -> Event {
         Event {
             id: self.id,
-            fixed_slot: self.fixed_slot,
-            resource_constraints: self.resource_constraints,
+            // resource_constraints: self.resource_constraints,
             time_constraints: self.time_constraints,
             resource_requirements: self.resource_requirements,
         }

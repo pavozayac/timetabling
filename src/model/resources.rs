@@ -16,6 +16,16 @@ impl From<&Resource> for ResourceIDPair {
     }
 }
 
+pub trait Initializable {
+    fn new(id: usize, type_id: usize) -> Self;
+}
+
+impl Initializable for ResourceIDPair {
+    fn new(id: usize, type_id: usize) -> Self {
+        (ResourceID(id), ResourceTypeID(type_id))
+    }
+}
+
 #[derive(Clone, Debug)]
 pub struct Resource {
     pub id: ResourceID,
