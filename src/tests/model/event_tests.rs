@@ -1,6 +1,6 @@
 use crate::model::{
     events::{EventBuilder, EventInstance, ResourceRequirement},
-    resources::{Initializable, Resource, ResourceIDPair},
+    resources::{Initializable},
     slots::{Outline, Slot},
     EventID, ResourceID, ResourceTypeID,
 };

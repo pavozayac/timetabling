@@ -50,7 +50,7 @@ impl<'a, R: Rng> Mutation for RandomSubstitutionMutation<'a, R> {
 
             // 50% chance to either extend the list of resources assigned to the event,
             // or to substitute for another resource instead.
-            let chance = if resources.len() > 0 {
+            let chance = if !resources.is_empty() {
                 1.0 / (resources.len() as f64 + 1.0)
             } else {
                 0.0

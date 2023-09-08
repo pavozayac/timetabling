@@ -7,7 +7,7 @@ use crate::model::{
     EventID, ProblemDomain, SlotID,
 };
 
-use crate::utils::is_subset;
+
 
 pub mod simple_chromosome;
 

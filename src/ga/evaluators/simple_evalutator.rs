@@ -1,9 +1,9 @@
-use std::{collections::HashMap, ops::Deref};
+use std::{collections::HashMap};
 
 use crate::{
     ga::chromosomes::{simple_chromosome::SimpleChromosome, Chromosome},
     model::{
-        events::ResourceRequirement, resources::ResourceIDPair, slots::Slot, EventID,
+        resources::ResourceIDPair, slots::Slot, EventID,
         ResourceTypeID,
     },
 };

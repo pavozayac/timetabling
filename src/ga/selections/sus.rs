@@ -11,8 +11,8 @@ pub struct StochasticUniversalSampling<R: Rng> {
 impl<R: Rng> Selection for StochasticUniversalSampling<R> {
     fn selection<T: Chromosome, E: FitnessEvaluator<Chromosome = T>>(
         &mut self,
-        evaluator: E,
-        pool: &[T],
+        _evaluator: E,
+        _pool: &[T],
     ) -> Vec<T> {
         todo!()
     }

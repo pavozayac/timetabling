@@ -1,9 +1,9 @@
 use std::{collections::HashMap, ops::Deref};
 
-use crate::utils::{self, has_unique_items};
+use crate::utils::{has_unique_items};
 
 use super::{
-    resources::{Resource, ResourceIDPair},
+    resources::{ResourceIDPair},
     slots::{Outline, Slot},
     EventID, ResourceTypeID, SlotID,
 };
@@ -47,7 +47,7 @@ impl Event {
         if !self.time_constraints.slots.is_empty()
             && !self.time_constraints.slots.contains(&assigned_slot)
         {
-            return Err(&"Slot is not withing time constraints.");
+            return Err("Slot is not withing time constraints.");
         }
 
         for rr in self.resource_requirements {
@@ -59,7 +59,7 @@ impl Event {
                 }
             }) < rr.amount
             {
-                return Err(&"Resource requirements have not been fulfilled.");
+                return Err("Resource requirements have not been fulfilled.");
             }
         }
 
