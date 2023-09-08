@@ -1,3 +1,6 @@
+mod simple_evalutator;
+use simple_evalutator::*;
+
 use crate::model::ProblemDomain;
 
 use super::chromosomes::Chromosome;

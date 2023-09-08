@@ -48,7 +48,7 @@ impl Chromosome for SimpleChromosome {
         &mut self.resource_allocations[usize::from(event)]
     }
 
-    fn schedule(&self) -> Result<Schedule, ()> {
+    fn schedule(&self) -> Result<Schedule, &'static str> {
         let mut event_instances = vec![];
 
         for (i, e) in self.slot_allocations.iter().enumerate() {

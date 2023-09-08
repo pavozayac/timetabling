@@ -37,15 +37,17 @@ impl Event {
         self,
         assigned_slot: Slot,
         assigned_resources: Vec<ResourceIDPair>,
-    ) -> Result<EventInstance, ()> {
+    ) -> Result<EventInstance, &'static str> {
         // if let Some(fixed_slot) = self.fixed_slot {
         //     if fixed_slot != assigned_slot {
         //         return Err(());
         //     }
         // }
 
-        if !self.time_constraints.slots.contains(&assigned_slot) {
-            return Err(());
+        if !self.time_constraints.slots.is_empty()
+            && !self.time_constraints.slots.contains(&assigned_slot)
+        {
+            return Err(&"Slot is not withing time constraints.");
         }
 
         for rr in self.resource_requirements {
@@ -57,7 +59,7 @@ impl Event {
                 }
             }) < rr.amount
             {
-                return Err(());
+                return Err(&"Resource requirements have not been fulfilled.");
             }
         }
 
@@ -149,7 +151,7 @@ pub struct Schedule {
 }
 
 impl Schedule {
-    pub fn new(event_instances: Vec<EventInstance>) -> Result<Schedule, ()> {
+    pub fn new(event_instances: Vec<EventInstance>) -> Result<Schedule, &'static str> {
         let mut map: HashMap<Slot, Vec<ResourceIDPair>> = HashMap::new();
 
         // This check ensures that no two EventInstances use the same resources in the same slot
@@ -170,7 +172,7 @@ impl Schedule {
         if map.values().all(|v| has_unique_items(v.iter())) {
             Ok(Schedule { event_instances })
         } else {
-            Err(())
+            Err("EventInstances occupy the same slot.")
         }
     }
 }

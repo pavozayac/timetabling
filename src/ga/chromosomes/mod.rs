@@ -18,7 +18,7 @@ pub trait Chromosome: Clone + Sized {
     fn set_slot(&mut self, event: EventID, slot: SlotID);
     fn get_resources(&self, event: EventID) -> &[ResourceIDPair];
     fn get_resources_mut(&mut self, event: EventID) -> &mut Vec<ResourceIDPair>;
-    fn schedule(&self) -> Result<Schedule, ()>;
+    fn schedule(&self) -> Result<Schedule, &'static str>;
 
     fn is_correct(&self, domain: &ProblemDomain) -> bool {
         let mut events_in_bounds = true;
