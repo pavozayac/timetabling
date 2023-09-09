@@ -4,6 +4,9 @@ pub use sus::*;
 mod truncation;
 pub use truncation::*;
 
+mod elitist;
+pub use elitist::*;
+
 use super::{chromosomes::Chromosome, evaluators::FitnessEvaluator};
 
 pub trait Selection {
