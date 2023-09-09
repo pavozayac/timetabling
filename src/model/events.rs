@@ -1,9 +1,9 @@
 use std::{collections::HashMap, ops::Deref};
 
-use crate::utils::{has_unique_items};
+use crate::utils::has_unique_items;
 
 use super::{
-    resources::{ResourceIDPair},
+    resources::ResourceIDPair,
     slots::{Outline, Slot},
     EventID, ResourceTypeID, SlotID,
 };

@@ -1,11 +1,8 @@
-use std::{collections::HashMap};
+use std::collections::HashMap;
 
 use crate::{
     ga::chromosomes::{simple_chromosome::SimpleChromosome, Chromosome},
-    model::{
-        resources::ResourceIDPair, slots::Slot, EventID,
-        ResourceTypeID,
-    },
+    model::{resources::ResourceIDPair, slots::Slot, EventID, ResourceTypeID},
 };
 
 use super::FitnessEvaluator;

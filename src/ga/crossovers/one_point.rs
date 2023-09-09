@@ -10,13 +10,13 @@ pub struct OnePointCrossover<T: Rng> {
 }
 
 impl<T: Rng> OnePointCrossover<T> {
-    fn new(rng: T) -> Self {
+    pub fn new(rng: T) -> Self {
         OnePointCrossover { rng }
     }
 }
 
 impl OnePointCrossover<ThreadRng> {
-    fn with_thread_rng() -> Self {
+    pub fn with_thread_rng() -> Self {
         OnePointCrossover {
             rng: rand::thread_rng(),
         }
